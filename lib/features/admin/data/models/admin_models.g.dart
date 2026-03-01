@@ -40,9 +40,9 @@ _$AdminUserModelImpl _$$AdminUserModelImplFromJson(Map<String, dynamic> json) =>
     _$AdminUserModelImpl(
       id: (json['id'] as num).toInt(),
       name: json['name'] as String,
-      dni: json['dni'] as String,
+      dni: (json['dni'] ?? '').toString(),
       email: json['email'] as String,
-      phone: json['phone'] as String,
+      phone: (json['phone'] ?? '').toString(),
       role: json['role'] as String,
       enabled: json['enabled'] as bool,
       accountLocked: json['accountLocked'] as bool,

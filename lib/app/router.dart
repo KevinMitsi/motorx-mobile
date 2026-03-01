@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -62,14 +63,28 @@ class AppRoutes {
   static const String adminAppointmentDetail = '/admin/appointments/:id';
 }
 
+/// ChangeNotifier that listens to auth state changes and notifies go_router
+/// to re-run redirect — without ever recreating the GoRouter.
+class _RouterNotifier extends ChangeNotifier {
+  _RouterNotifier(Ref ref) {
+    ref.listen<AsyncValue>(authNotifierProvider, (_, __) {
+      notifyListeners();
+    });
+  }
+}
+
 /// go_router configuration with auth redirect.
+/// The GoRouter is created ONCE; _RouterNotifier triggers refresh on auth
+/// changes so redirect is re-evaluated without disposing the widget tree.
 final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authNotifierProvider);
+  final notifier = _RouterNotifier(ref);
 
   return GoRouter(
     initialLocation: AppRoutes.login,
     debugLogDiagnostics: true,
+    refreshListenable: notifier,
     redirect: (context, state) {
+      final authState = ref.read(authNotifierProvider);
       final isLoggedIn = authState.valueOrNull != null;
       final isAuthRoute = state.matchedLocation == AppRoutes.login ||
           state.matchedLocation == AppRoutes.register ||
