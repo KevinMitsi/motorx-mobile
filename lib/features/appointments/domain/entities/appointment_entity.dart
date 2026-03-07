@@ -19,7 +19,7 @@ class AppointmentEntity {
   final String? clientNotes;
   final String? adminNotes;
   final String createdAt;
-  final String updatedAt;
+  final String? updatedAt;
 
   const AppointmentEntity({
     required this.id,
@@ -41,7 +41,7 @@ class AppointmentEntity {
     this.clientNotes,
     this.adminNotes,
     required this.createdAt,
-    required this.updatedAt,
+    this.updatedAt,
   });
 }
 

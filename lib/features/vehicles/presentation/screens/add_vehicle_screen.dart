@@ -26,9 +26,45 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
   final _ccController = TextEditingController();
   final _chassisController = TextEditingController();
   bool _isLoading = false;
+  bool _canSubmit = false;
+
+  @override
+  void initState() {
+    super.initState();
+    for (final c in [
+      _brandController,
+      _modelController,
+      _yearController,
+      _plateController,
+      _ccController,
+      _chassisController,
+    ]) {
+      c.addListener(_updateCanSubmit);
+    }
+  }
+
+  void _updateCanSubmit() {
+    final ok = _brandController.text.isNotEmpty &&
+        _modelController.text.isNotEmpty &&
+        _yearController.text.isNotEmpty &&
+        _plateController.text.isNotEmpty &&
+        _ccController.text.isNotEmpty &&
+        _chassisController.text.isNotEmpty;
+    if (ok != _canSubmit) setState(() => _canSubmit = ok);
+  }
 
   @override
   void dispose() {
+    for (final c in [
+      _brandController,
+      _modelController,
+      _yearController,
+      _plateController,
+      _ccController,
+      _chassisController,
+    ]) {
+      c.removeListener(_updateCanSubmit);
+    }
     _brandController.dispose();
     _modelController.dispose();
     _yearController.dispose();
@@ -79,6 +115,7 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
           padding: const EdgeInsets.all(24),
           child: Form(
             key: _formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -163,7 +200,8 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
                 const SizedBox(height: 32),
                 AppButton(
                   label: AppStrings.save,
-                  onPressed: _handleCreate,
+                  onPressed:
+                      (_canSubmit && !_isLoading) ? _handleCreate : null,
                   isLoading: _isLoading,
                   icon: Icons.save_rounded,
                 ),

@@ -69,7 +69,10 @@ dev_dependencies:
   freezed: ^2.5.8
   json_serializable: ^6.9.4
   riverpod_generator: ^2.6.3
-
+  
+  # Splash generator
+  flutter_native_splash: ^2.2.20
+  flutter_launcher_icons: ^0.14.4
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -109,3 +112,20 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+# Configuration for flutter_native_splash. After adding the dependency,
+# run: `flutter pub run flutter_native_splash:create`
+flutter_native_splash:
+  image: assets/icon/logo.png
+  color: "#FFFFFF"
+  android: true
+  ios: true
+  web: false
+  android_gravity: center
+  ios_content_mode: center
+
+# Configuration for flutter_launcher_icons to set the app icon shown on HomeScreen
+flutter_icons:
+  android: true
+  ios: true
+  image_path: assets/icon/logo.png

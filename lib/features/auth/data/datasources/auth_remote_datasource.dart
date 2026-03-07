@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 
 import '../../../../core/errors/exceptions.dart';
@@ -16,14 +18,23 @@ class AuthRemoteDatasource {
     try {
       return await request();
     } on DioException catch (e) {
+      // Error body may be a plain String or a Map depending on the endpoint.
+      final rawData = e.response?.data;
+      Map<String, dynamic>? dataMap;
+      if (rawData is Map<String, dynamic>) {
+        dataMap = rawData;
+      } else if (rawData is String && rawData.isNotEmpty) {
+        try {
+          final decoded = jsonDecode(rawData);
+          if (decoded is Map<String, dynamic>) dataMap = decoded;
+        } catch (_) {}
+      }
       throw ServerException(
-        message: e.response?.data?['message']?.toString() ??
-            e.response?.data?.toString() ??
+        message: dataMap?['message']?.toString() ??
+            rawData?.toString() ??
             'Error del servidor',
         statusCode: e.response?.statusCode ?? 500,
-        details: e.response?.data is Map<String, dynamic>
-            ? e.response?.data as Map<String, dynamic>
-            : null,
+        details: dataMap,
       );
     }
   }
@@ -37,14 +48,20 @@ class AuthRemoteDatasource {
       final response = await _dio.post(
         ApiEndpoints.login,
         data: {'email': email, 'password': password},
+        options: Options(responseType: ResponseType.plain),
       );
-      final data = response.data;
-      // If token is present, it's an ADMIN direct login
-      if (data is Map<String, dynamic> && data.containsKey('token')) {
-        return AuthResponseModel.fromJson(data);
+      // Try to decode as JSON — ADMIN login returns a token object.
+      // Non-admin login returns a plain-text 2FA message.
+      try {
+        final decoded = jsonDecode(response.data as String);
+        if (decoded is Map<String, dynamic> && decoded.containsKey('token')) {
+          return AuthResponseModel.fromJson(decoded);
+        }
+        return decoded;
+      } catch (_) {
+        // Plain text → 2FA message
+        return response.data;
       }
-      // Otherwise it's a 2FA message
-      return data;
     });
   }
 
@@ -106,6 +123,7 @@ class AuthRemoteDatasource {
       final response = await _dio.post(
         ApiEndpoints.passwordResetRequest,
         data: {'email': email},
+        options: Options(responseType: ResponseType.plain),
       );
       return response.data?.toString() ?? 'Solicitud procesada';
     });
@@ -120,6 +138,7 @@ class AuthRemoteDatasource {
       final response = await _dio.put(
         ApiEndpoints.passwordReset,
         data: {'token': token, 'newPassword': newPassword},
+        options: Options(responseType: ResponseType.plain),
       );
       return response.data?.toString() ?? 'Contraseña restablecida';
     });

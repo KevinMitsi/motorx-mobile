@@ -35,7 +35,9 @@ class AuthNotifier extends _$AuthNotifier {
     final result = await repo.login(email: email, password: password);
     return result.fold(
       (failure) {
-        state = AsyncError(failure.message, StackTrace.current);
+        // Restore to unauthenticated — do NOT put into AsyncError;
+        // that would pollute the auth state and hide the real error message.
+        state = const AsyncData(null);
         throw failure;
       },
       (data) {
@@ -57,7 +59,8 @@ class AuthNotifier extends _$AuthNotifier {
     final result = await repo.verify2fa(email: email, code: code);
     result.fold(
       (failure) {
-        state = AsyncError(failure.message, StackTrace.current);
+        state = const AsyncData(null);
+        throw failure;
       },
       (auth) {
         state = AsyncData(auth);
@@ -84,7 +87,8 @@ class AuthNotifier extends _$AuthNotifier {
     );
     result.fold(
       (failure) {
-        state = AsyncError(failure.message, StackTrace.current);
+        state = const AsyncData(null);
+        throw failure;
       },
       (auth) {
         state = AsyncData(auth);

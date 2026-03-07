@@ -4,7 +4,7 @@ class ApiEndpoints {
   ApiEndpoints._();
 
   // ── Base URL ──────────────────────────────────────────────
-  static const String baseUrl = 'http://10.48.112.233:8080/api';
+  static const String baseUrl = 'https://motorx-backend-272859418943.us-central1.run.app/api';
 
   // ── Auth ──────────────────────────────────────────────────
   static const String login = '/auth/login';

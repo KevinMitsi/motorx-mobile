@@ -1,10 +1,13 @@
 /// Sealed class hierarchy for domain-level failures.
 /// Used with `Either<Failure, T>` from fpdart in repository contracts.
-sealed class Failure {
+sealed class Failure implements Exception {
   final String message;
   final int? statusCode;
 
   const Failure(this.message, {this.statusCode});
+
+  @override
+  String toString() => message;
 }
 
 class ServerFailure extends Failure {

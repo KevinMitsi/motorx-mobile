@@ -23,8 +23,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _dniController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
   final _phoneController = TextEditingController();
   bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
   bool _isLoading = false;
 
   @override
@@ -33,6 +35,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     _dniController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     _phoneController.dispose();
     super.dispose();
   }
@@ -62,6 +65,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       if (mounted) setState(() => _isLoading = false);
     }
   }
+
+  bool _isPasswordValid(String v) =>
+      v.length >= 8 &&
+      v.contains(RegExp(r'[A-Z]')) &&
+      v.contains(RegExp(r'[0-9]')) &&
+      v.contains(RegExp(r'[!@#\$%^&*(),.?":{}|<>_\-]'));
 
   @override
   Widget build(BuildContext context) {
@@ -161,9 +170,39 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     onPressed: () =>
                         setState(() => _obscurePassword = !_obscurePassword),
                   ),
+                  onChanged: (_) => setState(() {}),
                   validator: (v) {
                     if (v == null || v.isEmpty) return AppStrings.fieldRequired;
-                    if (v.length < 6) return AppStrings.passwordTooShort;
+                    if (!_isPasswordValid(v)) {
+                      return 'La contraseña no cumple los requisitos de seguridad';
+                    }
+                    return null;
+                  },
+                ),
+                _PasswordRequirementsWidget(
+                    password: _passwordController.text),
+                const SizedBox(height: 16),
+
+                // Confirm password
+                AppTextField(
+                  controller: _confirmPasswordController,
+                  label: AppStrings.confirmPassword,
+                  obscureText: _obscureConfirmPassword,
+                  prefixIcon: const Icon(Icons.lock_outlined),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureConfirmPassword
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
+                    ),
+                    onPressed: () => setState(
+                        () => _obscureConfirmPassword = !_obscureConfirmPassword),
+                  ),
+                  validator: (v) {
+                    if (v == null || v.isEmpty) return AppStrings.fieldRequired;
+                    if (v != _passwordController.text) {
+                      return 'Las contraseñas no coinciden';
+                    }
                     return null;
                   },
                 ),
@@ -173,7 +212,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 AppTextField(
                   controller: _phoneController,
                   label: AppStrings.phone,
-                  hint: '+57 310 1234567',
+                  hint: '3001234567',
                   keyboardType: TextInputType.phone,
                   prefixIcon: const Icon(Icons.phone_outlined),
                   validator: (v) {
@@ -214,6 +253,69 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+// ── Password requirements helper ─────────────────────────────────────────────
+
+class _PasswordRequirementsWidget extends StatelessWidget {
+  final String password;
+  const _PasswordRequirementsWidget({required this.password});
+
+  @override
+  Widget build(BuildContext context) {
+    if (password.isEmpty) return const SizedBox.shrink();
+    final checks = [
+      _Req('Mínimo 8 caracteres', password.length >= 8),
+      _Req('Al menos 1 mayúscula', password.contains(RegExp(r'[A-Z]'))),
+      _Req('Al menos 1 número', password.contains(RegExp(r'[0-9]'))),
+      _Req(
+          'Al menos 1 símbolo (!@#\$...)',
+          password.contains(RegExp(r'[!@#\$%^&*(),.?":{}|<>_\-]'))),
+    ];
+    return Padding(
+      padding: const EdgeInsets.only(top: 8, left: 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: checks.map((r) => _RequirementRow(r)).toList(),
+      ),
+    );
+  }
+}
+
+class _Req {
+  final String label;
+  final bool met;
+  const _Req(this.label, this.met);
+}
+
+class _RequirementRow extends StatelessWidget {
+  final _Req req;
+  const _RequirementRow(this.req, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = req.met ? Colors.green : Theme.of(context).colorScheme.error;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Row(
+        children: [
+          Icon(
+            req.met ? Icons.check_circle_rounded : Icons.cancel_rounded,
+            size: 15,
+            color: color,
+          ),
+          const SizedBox(width: 6),
+          Text(
+            req.label,
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(color: color),
+          ),
+        ],
       ),
     );
   }
