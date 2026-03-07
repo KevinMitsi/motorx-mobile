@@ -113,11 +113,13 @@ class _CreateAppointmentScreenState
       // Show restriction dialog
       _showRestrictionDialog(restriction);
     } else {
-      // Fetch available slots
-      await ref.read(availableSlotsNotifierProvider.notifier).fetchSlots(
-            date: date.toApiDate(),
-            type: _selectedType!,
-          );
+      // Start fetching available slots and advance to step 3 so the
+      // UI becomes a listener (prevents AutoDispose providers from
+      // being disposed while the network call completes).
+      ref.read(availableSlotsNotifierProvider.notifier).fetchSlots(
+        date: date.toApiDate(),
+        type: _selectedType!,
+      );
       setState(() => _step = 3);
     }
   }
@@ -218,9 +220,16 @@ class _CreateAppointmentScreenState
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
+    // Keep the AutoDispose provider alive throughout this screen so that
+    // the async network result is not discarded before _SlotSelectionStep
+    // gets a chance to subscribe (Riverpod disposes on microtask when there
+    // are zero listeners, which can happen between fetchSlots() and the next
+    // frame where the step-3 widget registers its ref.watch).
+    ref.watch(availableSlotsNotifierProvider);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppStrings.newAppointment),
+        title: const Text('Nueva Cita'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: _goBack,

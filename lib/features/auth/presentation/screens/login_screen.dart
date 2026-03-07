@@ -87,12 +87,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     label: 'MotorX Logo',
                     child: Column(
                       children: [
-                        Icon(
-                          Icons.two_wheeler_rounded,
-                          size: 80,
-                          color: colorScheme.primary,
-                        ),
-                        const SizedBox(height: 8),
+                          Icon(
+                            Icons.two_wheeler_rounded,
+                            size: 80,
+                            color: colorScheme.primary,
+                          ),
                         Text(
                           AppStrings.appName,
                           style: context.textTheme.headlineLarge?.copyWith(

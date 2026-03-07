@@ -40,7 +40,7 @@ mixin _$AppointmentModel {
   String? get clientNotes => throw _privateConstructorUsedError;
   String? get adminNotes => throw _privateConstructorUsedError;
   String get createdAt => throw _privateConstructorUsedError;
-  String get updatedAt => throw _privateConstructorUsedError;
+  String? get updatedAt => throw _privateConstructorUsedError;
 
   /// Serializes this AppointmentModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -79,7 +79,7 @@ abstract class $AppointmentModelCopyWith<$Res> {
     String? clientNotes,
     String? adminNotes,
     String createdAt,
-    String updatedAt,
+    String? updatedAt,
   });
 }
 
@@ -196,11 +196,11 @@ class _$AppointmentModelCopyWithImpl<$Res, $Val extends AppointmentModel>
             createdAt: null == createdAt
                 ? _value.createdAt
                 : createdAt // ignore: cast_nullable_to_non_nullable
-                      as String,
+                  as String,
             updatedAt: null == updatedAt
                 ? _value.updatedAt
-                : updatedAt // ignore: cast_nullable_to_non_nullable
-                      as String,
+                : updatedAt // ignore: cast_nullable_to_nullable
+                  as String?,
           )
           as $Val,
     );
@@ -236,7 +236,7 @@ abstract class _$$AppointmentModelImplCopyWith<$Res>
     String? clientNotes,
     String? adminNotes,
     String createdAt,
-    String updatedAt,
+    String? updatedAt,
   });
 }
 
@@ -355,8 +355,8 @@ class __$$AppointmentModelImplCopyWithImpl<$Res>
                   as String,
         updatedAt: null == updatedAt
             ? _value.updatedAt
-            : updatedAt // ignore: cast_nullable_to_non_nullable
-                  as String,
+            : updatedAt // ignore: cast_nullable_to_nullable
+                  as String?,
       ),
     );
   }
@@ -385,7 +385,7 @@ class _$AppointmentModelImpl implements _AppointmentModel {
     this.clientNotes,
     this.adminNotes,
     required this.createdAt,
-    required this.updatedAt,
+    this.updatedAt,
   });
 
   factory _$AppointmentModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -430,7 +430,7 @@ class _$AppointmentModelImpl implements _AppointmentModel {
   @override
   final String createdAt;
   @override
-  final String updatedAt;
+  final String? updatedAt;
 
   @override
   String toString() {
@@ -545,7 +545,7 @@ abstract class _AppointmentModel implements AppointmentModel {
     final String? clientNotes,
     final String? adminNotes,
     required final String createdAt,
-    required final String updatedAt,
+    final String? updatedAt,
   }) = _$AppointmentModelImpl;
 
   factory _AppointmentModel.fromJson(Map<String, dynamic> json) =
@@ -590,7 +590,7 @@ abstract class _AppointmentModel implements AppointmentModel {
   @override
   String get createdAt;
   @override
-  String get updatedAt;
+  String? get updatedAt;
 
   /// Create a copy of AppointmentModel
   /// with the given fields replaced by the non-null parameter values.

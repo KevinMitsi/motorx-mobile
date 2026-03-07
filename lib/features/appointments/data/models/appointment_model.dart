@@ -26,7 +26,7 @@ class AppointmentModel with _$AppointmentModel {
     String? clientNotes,
     String? adminNotes,
     required String createdAt,
-    required String updatedAt,
+    String? updatedAt,
   }) = _AppointmentModel;
 
   factory AppointmentModel.fromJson(Map<String, dynamic> json) =>

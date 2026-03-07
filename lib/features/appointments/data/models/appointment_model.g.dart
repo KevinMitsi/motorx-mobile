@@ -28,7 +28,7 @@ _$AppointmentModelImpl _$$AppointmentModelImplFromJson(
   clientNotes: json['clientNotes'] as String?,
   adminNotes: json['adminNotes'] as String?,
   createdAt: json['createdAt'] as String,
-  updatedAt: json['updatedAt'] as String,
+  updatedAt: json['updatedAt'] as String?,
 );
 
 Map<String, dynamic> _$$AppointmentModelImplToJson(

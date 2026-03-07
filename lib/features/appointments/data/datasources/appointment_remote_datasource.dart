@@ -19,7 +19,14 @@ class AppointmentRemoteDatasource {
         ApiEndpoints.userAvailableSlots,
         queryParameters: {'date': date, 'type': type},
       );
-      return AvailableSlotsModel.fromJson(response.data);
+
+      // Some backends wrap the payload under a `data` key.
+      // Support both direct body and envelope { data: ... }.
+      final payload = response.data is Map && response.data.containsKey('data')
+          ? response.data['data']
+          : response.data;
+
+      return AvailableSlotsModel.fromJson(payload);
     });
   }
 
