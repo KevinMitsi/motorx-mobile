@@ -4,10 +4,12 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-val keystoreProperties = java.util.Properties()
-val keystorePropertiesFile = rootProject.file("key.properties")
-if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(java.io.FileInputStream(keystorePropertiesFile))
+fun localProperty(name: String): String {
+    val file = rootProject.file("key.properties")
+    return file.readLines()
+        .firstOrNull { it.startsWith("$name=") }
+        ?.substringAfter("=")
+        ?: ""
 }
 
 android {
@@ -34,10 +36,10 @@ android {
 
     signingConfigs {
         create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-            storeFile = file(keystoreProperties["storeFile"] as String)
-            storePassword = keystoreProperties["storePassword"] as String
+            keyAlias = localProperty("keyAlias")
+            keyPassword = localProperty("keyPassword")
+            storeFile = file(localProperty("storeFile"))
+            storePassword = localProperty("storePassword")
         }
     }
 
