@@ -26,6 +26,8 @@ import '../features/admin/presentation/screens/edit_employee_screen.dart';
 import '../features/admin/presentation/screens/admin_users_screen.dart';
 import '../features/admin/presentation/screens/admin_vehicles_screen.dart';
 import '../features/admin/presentation/screens/admin_appointment_detail_screen.dart';
+import '../features/admin/presentation/screens/admin_metrics_screen.dart';
+import '../features/admin/presentation/screens/admin_logs_screen.dart';
 import '../features/profile/presentation/screens/profile_screen.dart';
 
 /// Route path constants to avoid magic strings.
@@ -61,6 +63,8 @@ class AppRoutes {
   static const String adminUsers = '/admin/users';
   static const String adminVehicles = '/admin/vehicles';
   static const String adminAppointmentDetail = '/admin/appointments/:id';
+  static const String adminMetrics = '/admin/metrics';
+  static const String adminLogs = '/admin/logs';
 }
 
 /// ChangeNotifier that listens to auth state changes and notifies go_router
@@ -86,7 +90,8 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final authState = ref.read(authNotifierProvider);
       final isLoggedIn = authState.valueOrNull != null;
-      final isAuthRoute = state.matchedLocation == AppRoutes.login ||
+      final isAuthRoute =
+          state.matchedLocation == AppRoutes.login ||
           state.matchedLocation == AppRoutes.register ||
           state.matchedLocation == AppRoutes.verify2fa ||
           state.matchedLocation == AppRoutes.forgotPassword ||
@@ -225,6 +230,14 @@ final routerProvider = Provider<GoRouter>((ref) {
           final id = int.parse(state.pathParameters['id']!);
           return AdminAppointmentDetailScreen(appointmentId: id);
         },
+      ),
+      GoRoute(
+        path: AppRoutes.adminMetrics,
+        builder: (context, state) => const AdminMetricsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.adminLogs,
+        builder: (context, state) => const AdminLogsScreen(),
       ),
     ],
   );

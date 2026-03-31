@@ -100,6 +100,8 @@ class AppStrings {
   static const String unplannedAppointment = 'Cita no planeada';
   static const String changeTechnician = 'Cambiar técnico';
   static const String adminCancelAppointment = 'Cancelar cita';
+  static const String adminMetrics = 'Métricas';
+  static const String adminLogs = 'Logs de auditoría';
 
   // ── Employee Positions ────────────────────────────────────
   static const Map<String, String> employeePositionLabels = {
