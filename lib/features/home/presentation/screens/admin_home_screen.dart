@@ -120,6 +120,26 @@ class AdminHomeScreen extends ConsumerWidget {
                 subtitle: 'Ver y transferir vehículos',
                 onTap: () => context.push(AppRoutes.adminVehicles),
               ),
+              const SizedBox(height: 24),
+
+              _SectionTitle(
+                title: 'Observabilidad',
+                icon: Icons.analytics_rounded,
+                color: Colors.deepOrange,
+              ),
+              const SizedBox(height: 12),
+              _AdminActionCard(
+                icon: Icons.monitor_heart_rounded,
+                title: AppStrings.adminMetrics,
+                subtitle: 'Revisar métricas operacionales y de seguridad',
+                onTap: () => context.push(AppRoutes.adminMetrics),
+              ),
+              _AdminActionCard(
+                icon: Icons.receipt_long_rounded,
+                title: AppStrings.adminLogs,
+                subtitle: 'Consultar auditoría de acciones del sistema',
+                onTap: () => context.push(AppRoutes.adminLogs),
+              ),
             ],
           ),
         ),
@@ -148,9 +168,9 @@ class _SectionTitle extends StatelessWidget {
         Text(
           title,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: color,
-              ),
+            fontWeight: FontWeight.w600,
+            color: color,
+          ),
         ),
       ],
     );
@@ -186,9 +206,9 @@ class _AdminActionCard extends StatelessWidget {
           ),
           title: Text(
             title,
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
           ),
           subtitle: Text(subtitle),
           trailing: Icon(

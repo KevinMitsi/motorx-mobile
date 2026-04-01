@@ -132,5 +132,44 @@ final adminVehicleNotifierProvider =
     );
 
 typedef _$AdminVehicleNotifier = AutoDisposeAsyncNotifier<List<VehicleEntity>>;
+String _$adminMetricsNotifierHash() =>
+    r'54b05d66f32ae7b858f1605edfef88bbc4ac6448';
+
+/// See also [AdminMetricsNotifier].
+@ProviderFor(AdminMetricsNotifier)
+final adminMetricsNotifierProvider =
+    AutoDisposeAsyncNotifierProvider<
+      AdminMetricsNotifier,
+      MetricsSummaryEntity
+    >.internal(
+      AdminMetricsNotifier.new,
+      name: r'adminMetricsNotifierProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$adminMetricsNotifierHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$AdminMetricsNotifier = AutoDisposeAsyncNotifier<MetricsSummaryEntity>;
+String _$adminLogsNotifierHash() => r'278e8c517c5b408c62e83c06adfbb7ce013d3961';
+
+/// See also [AdminLogsNotifier].
+@ProviderFor(AdminLogsNotifier)
+final adminLogsNotifierProvider =
+    AutoDisposeAsyncNotifierProvider<
+      AdminLogsNotifier,
+      AdminLogPageEntity
+    >.internal(
+      AdminLogsNotifier.new,
+      name: r'adminLogsNotifierProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$adminLogsNotifierHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$AdminLogsNotifier = AutoDisposeAsyncNotifier<AdminLogPageEntity>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

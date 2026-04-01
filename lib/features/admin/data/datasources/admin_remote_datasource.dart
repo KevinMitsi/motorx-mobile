@@ -26,8 +26,7 @@ class AdminRemoteDatasource {
     });
   }
 
-  Future<List<AppointmentModel>> getCalendar(
-      String start, String end) async {
+  Future<List<AppointmentModel>> getCalendar(String start, String end) async {
     return _handleRequest(() async {
       final response = await _dio.get(
         ApiEndpoints.adminCalendar,
@@ -110,8 +109,7 @@ class AdminRemoteDatasource {
 
   Future<AppointmentModel> getAppointmentDetail(int id) async {
     return _handleRequest(() async {
-      final response =
-          await _dio.get(ApiEndpoints.adminAppointmentDetail(id));
+      final response = await _dio.get(ApiEndpoints.adminAppointmentDetail(id));
       return AppointmentModel.fromJson(response.data);
     });
   }
@@ -129,8 +127,7 @@ class AdminRemoteDatasource {
 
   Future<EmployeeModel> getEmployeeDetail(int id) async {
     return _handleRequest(() async {
-      final response =
-          await _dio.get(ApiEndpoints.adminEmployeeDetail(id));
+      final response = await _dio.get(ApiEndpoints.adminEmployeeDetail(id));
       return EmployeeModel.fromJson(response.data);
     });
   }
@@ -208,8 +205,7 @@ class AdminRemoteDatasource {
 
   Future<AdminUserModel> unblockUser(int id) async {
     return _handleRequest(() async {
-      final response =
-          await _dio.patch(ApiEndpoints.adminUnblockUser(id));
+      final response = await _dio.patch(ApiEndpoints.adminUnblockUser(id));
       return AdminUserModel.fromJson(response.data);
     });
   }
@@ -233,8 +229,7 @@ class AdminRemoteDatasource {
 
   Future<VehicleModel> getAdminVehicleDetail(int id) async {
     return _handleRequest(() async {
-      final response =
-          await _dio.get(ApiEndpoints.adminVehicleDetail(id));
+      final response = await _dio.get(ApiEndpoints.adminVehicleDetail(id));
       return VehicleModel.fromJson(response.data);
     });
   }
@@ -249,6 +244,67 @@ class AdminRemoteDatasource {
         data: {'newOwnerId': newOwnerId},
       );
       return VehicleModel.fromJson(response.data);
+    });
+  }
+
+  // ── Admin Metrics ────────────────────────────────────────
+
+  Future<List<PerformanceMetricsModel>> getPerformanceMetrics() async {
+    return _handleRequest(() async {
+      final response = await _dio.get(ApiEndpoints.adminMetricsPerformance);
+      return (response.data as List)
+          .map((e) => PerformanceMetricsModel.fromJson(e))
+          .toList();
+    });
+  }
+
+  Future<SecurityMetricsModel> getSecurityMetrics() async {
+    return _handleRequest(() async {
+      final response = await _dio.get(ApiEndpoints.adminMetricsSecurity);
+      return SecurityMetricsModel.fromJson(response.data);
+    });
+  }
+
+  Future<MaintainabilityMetricsModel> getMaintainabilityMetrics() async {
+    return _handleRequest(() async {
+      final response = await _dio.get(ApiEndpoints.adminMetricsMaintainability);
+      return MaintainabilityMetricsModel.fromJson(response.data);
+    });
+  }
+
+  Future<AppointmentsMetricsModel> getAppointmentsMetrics() async {
+    return _handleRequest(() async {
+      final response = await _dio.get(ApiEndpoints.adminMetricsAppointments);
+      return AppointmentsMetricsModel.fromJson(response.data);
+    });
+  }
+
+  Future<MetricsSummaryModel> getMetricsSummary() async {
+    return _handleRequest(() async {
+      final response = await _dio.get(ApiEndpoints.adminMetricsSummary);
+      return MetricsSummaryModel.fromJson(response.data);
+    });
+  }
+
+  // ── Admin Logs ───────────────────────────────────────────
+
+  Future<AdminLogPageModel> getLogs({
+    int page = 0,
+    int size = 20,
+    String sort = 'createdAt,desc',
+  }) async {
+    return _handleRequest(() async {
+      final queryParameters = <String, dynamic>{
+        'page': page,
+        'size': size,
+        'sort': sort,
+      };
+
+      final response = await _dio.get(
+        ApiEndpoints.adminLogs,
+        queryParameters: queryParameters,
+      );
+      return AdminLogPageModel.fromJson(response.data);
     });
   }
 

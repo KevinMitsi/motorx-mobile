@@ -117,7 +117,7 @@ class _$AppointmentModelCopyWithImpl<$Res, $Val extends AppointmentModel>
     Object? clientNotes = freezed,
     Object? adminNotes = freezed,
     Object? createdAt = null,
-    Object? updatedAt = null,
+    Object? updatedAt = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -196,11 +196,11 @@ class _$AppointmentModelCopyWithImpl<$Res, $Val extends AppointmentModel>
             createdAt: null == createdAt
                 ? _value.createdAt
                 : createdAt // ignore: cast_nullable_to_non_nullable
-                  as String,
-            updatedAt: null == updatedAt
+                      as String,
+            updatedAt: freezed == updatedAt
                 ? _value.updatedAt
-                : updatedAt // ignore: cast_nullable_to_nullable
-                  as String?,
+                : updatedAt // ignore: cast_nullable_to_non_nullable
+                      as String?,
           )
           as $Val,
     );
@@ -273,7 +273,7 @@ class __$$AppointmentModelImplCopyWithImpl<$Res>
     Object? clientNotes = freezed,
     Object? adminNotes = freezed,
     Object? createdAt = null,
-    Object? updatedAt = null,
+    Object? updatedAt = freezed,
   }) {
     return _then(
       _$AppointmentModelImpl(
@@ -353,9 +353,9 @@ class __$$AppointmentModelImplCopyWithImpl<$Res>
             ? _value.createdAt
             : createdAt // ignore: cast_nullable_to_non_nullable
                   as String,
-        updatedAt: null == updatedAt
+        updatedAt: freezed == updatedAt
             ? _value.updatedAt
-            : updatedAt // ignore: cast_nullable_to_nullable
+            : updatedAt // ignore: cast_nullable_to_non_nullable
                   as String?,
       ),
     );

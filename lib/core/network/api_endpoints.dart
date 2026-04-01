@@ -4,7 +4,8 @@ class ApiEndpoints {
   ApiEndpoints._();
 
   // ── Base URL ──────────────────────────────────────────────
-  static const String baseUrl = 'https://motorx-backend-272859418943.us-central1.run.app/api';
+  static const String baseUrl =
+      'https://motorx-backend-272859418943.us-central1.run.app/api';
 
   // ── Auth ──────────────────────────────────────────────────
   static const String login = '/auth/login';
@@ -30,8 +31,7 @@ class ApiEndpoints {
       '/v1/user/appointments/my/$id';
   static String userVehicleAppointments(int vehicleId) =>
       '/v1/user/appointments/my/vehicle/$vehicleId';
-  static String userCancelAppointment(int id) =>
-      '/v1/user/appointments/my/$id';
+  static String userCancelAppointment(int id) => '/v1/user/appointments/my/$id';
 
   // ── User: Vehicles ────────────────────────────────────────
   static const String userVehicles = '/v1/user/vehicles';
@@ -48,8 +48,7 @@ class ApiEndpoints {
       '/v1/admin/appointments/$id/cancel';
   static String adminChangeTechnician(int id) =>
       '/v1/admin/appointments/$id/technician';
-  static String adminAppointmentDetail(int id) =>
-      '/v1/admin/appointments/$id';
+  static String adminAppointmentDetail(int id) => '/v1/admin/appointments/$id';
   static String adminClientAppointments(int clientId) =>
       '/v1/admin/appointments/client/$clientId';
   static String adminVehicleAppointments(int vehicleId) =>
@@ -71,4 +70,16 @@ class ApiEndpoints {
   static String adminVehicleDetail(int id) => '/v1/admin/vehicles/$id';
   static String adminTransferOwnership(int id) =>
       '/v1/admin/vehicles/$id/transfer-ownership';
+
+  // ── Admin: Metrics ───────────────────────────────────────
+  static const String adminMetricsPerformance = '/v1/admin/metrics/performance';
+  static const String adminMetricsSecurity = '/v1/admin/metrics/security';
+  static const String adminMetricsMaintainability =
+      '/v1/admin/metrics/maintainability';
+  static const String adminMetricsAppointments =
+      '/v1/admin/metrics/appointments';
+  static const String adminMetricsSummary = '/v1/admin/metrics/summary';
+
+  // ── Admin: Logs ──────────────────────────────────────────
+  static const String adminLogs = '/v1/admin/logs';
 }
