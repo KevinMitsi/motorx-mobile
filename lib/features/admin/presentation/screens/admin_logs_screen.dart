@@ -9,7 +9,7 @@ import '../../../../shared/widgets/loading_widget.dart';
 import '../../domain/entities/admin_entities.dart';
 import '../providers/admin_provider.dart';
 
-/// Admin screen to inspect paginated audit logs with filters.
+/// Admin screen to inspect paginated audit logs.
 class AdminLogsScreen extends ConsumerStatefulWidget {
   const AdminLogsScreen({super.key});
 
@@ -18,122 +18,17 @@ class AdminLogsScreen extends ConsumerStatefulWidget {
 }
 
 class _AdminLogsScreenState extends ConsumerState<AdminLogsScreen> {
-  static const _serviceOptions = <String>[
-    'AUTHENTICATION',
-    'USER',
-    'PASSWORD_RESET',
-    'APPOINTMENT',
-    'VEHICLE',
-    'ADMIN',
-  ];
-
-  static const _actionOptions = <String>[
-    'LOGIN',
-    'REGISTER',
-    'LOGOUT',
-    'VERIFY_2FA',
-    'REFRESH_TOKEN',
-    'PASSWORD_RESET_REQUEST',
-    'PASSWORD_RESET_CONFIRM',
-    'UPDATE_USER_PROFILE',
-    'SCHEDULE_APPOINTMENT',
-    'CANCEL_APPOINTMENT',
-  ];
-
-  static const _resultOptions = <String>['SUCCESS', 'FAILURE'];
-
-  final _actorEmailController = TextEditingController();
-  final _actorUserIdController = TextEditingController();
-
-  String? _serviceName;
-  String? _actionType;
-  String? _result;
-  DateTime? _fromDate;
-  DateTime? _toDate;
+  static const int _pageSize = 20;
+  static const String _sort = 'createdAt,desc';
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(adminLogsNotifierProvider.notifier).refresh();
+      ref
+          .read(adminLogsNotifierProvider.notifier)
+          .fetchLogs(page: 0, size: _pageSize, sort: _sort);
     });
-  }
-
-  @override
-  void dispose() {
-    _actorEmailController.dispose();
-    _actorUserIdController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _pickDate({required bool isFrom}) async {
-    final selected = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2024),
-      lastDate: DateTime.now().add(const Duration(days: 365)),
-    );
-    if (selected == null) return;
-
-    setState(() {
-      if (isFrom) {
-        _fromDate = DateTime(
-          selected.year,
-          selected.month,
-          selected.day,
-          0,
-          0,
-          0,
-        );
-      } else {
-        _toDate = DateTime(
-          selected.year,
-          selected.month,
-          selected.day,
-          23,
-          59,
-          59,
-        );
-      }
-    });
-  }
-
-  Future<void> _applyFilters() async {
-    final actorEmail = _actorEmailController.text.trim();
-    final actorUserIdRaw = _actorUserIdController.text.trim();
-
-    await ref
-        .read(adminLogsNotifierProvider.notifier)
-        .fetchLogs(
-          filters: AdminLogFilters(
-            serviceName: _serviceName,
-            actionType: _actionType,
-            result: _result,
-            actorEmail: actorEmail.isEmpty ? null : actorEmail,
-            actorUserId: actorUserIdRaw.isEmpty
-                ? null
-                : int.tryParse(actorUserIdRaw),
-            from: _fromDate?.toIso8601String(),
-            to: _toDate?.toIso8601String(),
-          ),
-          page: 0,
-          size: 20,
-        );
-  }
-
-  Future<void> _resetFilters() async {
-    setState(() {
-      _serviceName = null;
-      _actionType = null;
-      _result = null;
-      _fromDate = null;
-      _toDate = null;
-    });
-
-    _actorEmailController.clear();
-    _actorUserIdController.clear();
-
-    await ref.read(adminLogsNotifierProvider.notifier).fetchLogs();
   }
 
   @override
@@ -151,32 +46,31 @@ class _AdminLogsScreenState extends ConsumerState<AdminLogsScreen> {
       ),
       body: Column(
         children: [
-          _FiltersPanel(
-            serviceName: _serviceName,
-            actionType: _actionType,
-            result: _result,
-            fromDate: _fromDate,
-            toDate: _toDate,
-            serviceOptions: _serviceOptions,
-            actionOptions: _actionOptions,
-            resultOptions: _resultOptions,
-            actorEmailController: _actorEmailController,
-            actorUserIdController: _actorUserIdController,
-            onServiceChanged: (v) => setState(() => _serviceName = v),
-            onActionChanged: (v) => setState(() => _actionType = v),
-            onResultChanged: (v) => setState(() => _result = v),
-            onPickFromDate: () => _pickDate(isFrom: true),
-            onPickToDate: () => _pickDate(isFrom: false),
-            onApplyFilters: _applyFilters,
-            onResetFilters: _resetFilters,
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  children: [
+                    const Icon(Icons.info_outline_rounded, size: 18),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Mostrando logs paginados ($_pageSize por página, ordenados por fecha desc).',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
           Expanded(
             child: logsState.when(
               data: (page) {
                 if (page.empty || page.content.isEmpty) {
-                  return const Center(
-                    child: Text('No hay logs para los filtros actuales'),
-                  );
+                  return const Center(child: Text('No hay logs registrados'));
                 }
 
                 return Column(
@@ -244,165 +138,6 @@ class _AdminLogsScreenState extends ConsumerState<AdminLogsScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _FiltersPanel extends StatelessWidget {
-  final String? serviceName;
-  final String? actionType;
-  final String? result;
-  final DateTime? fromDate;
-  final DateTime? toDate;
-  final List<String> serviceOptions;
-  final List<String> actionOptions;
-  final List<String> resultOptions;
-  final TextEditingController actorEmailController;
-  final TextEditingController actorUserIdController;
-  final ValueChanged<String?> onServiceChanged;
-  final ValueChanged<String?> onActionChanged;
-  final ValueChanged<String?> onResultChanged;
-  final VoidCallback onPickFromDate;
-  final VoidCallback onPickToDate;
-  final Future<void> Function() onApplyFilters;
-  final Future<void> Function() onResetFilters;
-
-  const _FiltersPanel({
-    required this.serviceName,
-    required this.actionType,
-    required this.result,
-    required this.fromDate,
-    required this.toDate,
-    required this.serviceOptions,
-    required this.actionOptions,
-    required this.resultOptions,
-    required this.actorEmailController,
-    required this.actorUserIdController,
-    required this.onServiceChanged,
-    required this.onActionChanged,
-    required this.onResultChanged,
-    required this.onPickFromDate,
-    required this.onPickToDate,
-    required this.onApplyFilters,
-    required this.onResetFilters,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    String formatDate(DateTime? value) {
-      if (value == null) return 'No seleccionado';
-      return DateFormat('dd/MM/yyyy').format(value);
-    }
-
-    return Card(
-      margin: const EdgeInsets.all(12),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    value: serviceName,
-                    decoration: const InputDecoration(labelText: 'Módulo'),
-                    items: serviceOptions
-                        .map(
-                          (value) => DropdownMenuItem(
-                            value: value,
-                            child: Text(value),
-                          ),
-                        )
-                        .toList(),
-                    onChanged: onServiceChanged,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    value: result,
-                    decoration: const InputDecoration(labelText: 'Resultado'),
-                    items: resultOptions
-                        .map(
-                          (value) => DropdownMenuItem(
-                            value: value,
-                            child: Text(value),
-                          ),
-                        )
-                        .toList(),
-                    onChanged: onResultChanged,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            DropdownButtonFormField<String>(
-              value: actionType,
-              decoration: const InputDecoration(labelText: 'Acción'),
-              items: actionOptions
-                  .map(
-                    (value) =>
-                        DropdownMenuItem(value: value, child: Text(value)),
-                  )
-                  .toList(),
-              onChanged: onActionChanged,
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: actorEmailController,
-              decoration: const InputDecoration(
-                labelText: 'Actor email (parcial)',
-              ),
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: actorUserIdController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: 'Actor userId'),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: onPickFromDate,
-                    icon: const Icon(Icons.event_rounded),
-                    label: Text('Desde: ${formatDate(fromDate)}'),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: onPickToDate,
-                    icon: const Icon(Icons.event_rounded),
-                    label: Text('Hasta: ${formatDate(toDate)}'),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(
-                  child: FilledButton.icon(
-                    onPressed: onApplyFilters,
-                    icon: const Icon(Icons.filter_alt_rounded),
-                    label: const Text('Aplicar filtros'),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: onResetFilters,
-                    icon: const Icon(Icons.refresh_rounded),
-                    label: const Text('Limpiar'),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }

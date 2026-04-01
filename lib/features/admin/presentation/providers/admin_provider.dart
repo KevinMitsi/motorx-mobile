@@ -238,79 +238,49 @@ class AdminMetricsNotifier extends _$AdminMetricsNotifier {
 // ADMIN LOGS
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-class AdminLogFilters {
-  final String? serviceName;
-  final String? actionType;
-  final String? result;
-  final String? actorEmail;
-  final int? actorUserId;
-  final String? from;
-  final String? to;
-
-  const AdminLogFilters({
-    this.serviceName,
-    this.actionType,
-    this.result,
-    this.actorEmail,
-    this.actorUserId,
-    this.from,
-    this.to,
-  });
-}
-
 @riverpod
 class AdminLogsNotifier extends _$AdminLogsNotifier {
-  AdminLogFilters _filters = const AdminLogFilters();
   int _page = 0;
   int _size = 20;
+  String _sort = 'createdAt,desc';
 
   @override
   Future<AdminLogPageEntity> build() async {
     final ds = ref.watch(adminDatasourceProvider);
-    final model = await ds.getLogs(page: _page, size: _size);
+    final model = await ds.getLogs(page: _page, size: _size, sort: _sort);
     return _mapAdminLogPage(model);
   }
 
   Future<void> fetchLogs({
-    AdminLogFilters filters = const AdminLogFilters(),
     int page = 0,
     int size = 20,
+    String sort = 'createdAt,desc',
   }) async {
-    _filters = filters;
     _page = page;
     _size = size;
+    _sort = sort;
 
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       final ds = ref.read(adminDatasourceProvider);
-      final model = await ds.getLogs(
-        serviceName: filters.serviceName,
-        actionType: filters.actionType,
-        result: filters.result,
-        actorEmail: filters.actorEmail,
-        actorUserId: filters.actorUserId,
-        from: filters.from,
-        to: filters.to,
-        page: page,
-        size: size,
-      );
+      final model = await ds.getLogs(page: page, size: size, sort: sort);
       return _mapAdminLogPage(model);
     });
   }
 
   Future<void> refresh() async {
-    await fetchLogs(filters: _filters, page: _page, size: _size);
+    await fetchLogs(page: _page, size: _size, sort: _sort);
   }
 
   Future<void> nextPage() async {
     final current = state.valueOrNull;
     if (current == null || current.last) return;
-    await fetchLogs(filters: _filters, page: _page + 1, size: _size);
+    await fetchLogs(page: _page + 1, size: _size, sort: _sort);
   }
 
   Future<void> previousPage() async {
     if (_page <= 0) return;
-    await fetchLogs(filters: _filters, page: _page - 1, size: _size);
+    await fetchLogs(page: _page - 1, size: _size, sort: _sort);
   }
 }
 

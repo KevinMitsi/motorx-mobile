@@ -289,13 +289,6 @@ class AdminRemoteDatasource {
   // ── Admin Logs ───────────────────────────────────────────
 
   Future<AdminLogPageModel> getLogs({
-    String? serviceName,
-    String? actionType,
-    String? result,
-    String? actorEmail,
-    int? actorUserId,
-    String? from,
-    String? to,
     int page = 0,
     int size = 20,
     String sort = 'createdAt,desc',
@@ -305,16 +298,6 @@ class AdminRemoteDatasource {
         'page': page,
         'size': size,
         'sort': sort,
-        if (serviceName != null && serviceName.isNotEmpty)
-          'serviceName': serviceName,
-        if (actionType != null && actionType.isNotEmpty)
-          'actionType': actionType,
-        if (result != null && result.isNotEmpty) 'result': result,
-        if (actorEmail != null && actorEmail.isNotEmpty)
-          'actorEmail': actorEmail,
-        if (actorUserId != null) 'actorUserId': actorUserId,
-        if (from != null && from.isNotEmpty) 'from': from,
-        if (to != null && to.isNotEmpty) 'to': to,
       };
 
       final response = await _dio.get(
