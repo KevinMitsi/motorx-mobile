@@ -3,6 +3,8 @@ class SpareModel {
   final String name;
   final String savCode;
   final String spareCode;
+  final String supplier;
+  final List<String> compatibleMotorcycles;
   final int quantity;
   final double purchasePriceWithVat;
   final double salePrice;
@@ -15,6 +17,8 @@ class SpareModel {
     required this.name,
     required this.savCode,
     required this.spareCode,
+    required this.supplier,
+    required this.compatibleMotorcycles,
     required this.quantity,
     required this.purchasePriceWithVat,
     required this.salePrice,
@@ -29,11 +33,28 @@ class SpareModel {
       return double.tryParse(value?.toString() ?? '') ?? 0;
     }
 
+    List<String> parseCompatibleMotorcycles(dynamic value) {
+      if (value is List) {
+        return value
+            .map((e) => e.toString())
+            .where((e) => e.isNotEmpty)
+            .toList();
+      }
+      if (value is String && value.trim().isNotEmpty) {
+        return [value.trim()];
+      }
+      return const [];
+    }
+
     return SpareModel(
       id: (json['id'] as num?)?.toInt() ?? 0,
       name: json['name']?.toString() ?? '',
       savCode: json['savCode']?.toString() ?? '',
       spareCode: json['spareCode']?.toString() ?? '',
+      supplier: json['supplier']?.toString() ?? '',
+      compatibleMotorcycles: parseCompatibleMotorcycles(
+        json['compatibleMotorcycles'],
+      ),
       quantity: (json['quantity'] as num?)?.toInt() ?? 0,
       purchasePriceWithVat: parseDouble(json['purchasePriceWithVat']),
       salePrice: parseDouble(json['salePrice']),

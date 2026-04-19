@@ -132,6 +132,24 @@ final routerProvider = Provider<GoRouter>((ref) {
         return AppRoutes.clientHome;
       }
 
+      if (isLoggedIn && state.matchedLocation == AppRoutes.chatbot) {
+        final user = authState.valueOrNull;
+        if (user?.role != 'CLIENT') {
+          if (user?.role == 'ADMIN') {
+            return AppRoutes.adminHome;
+          }
+          if (user?.role == 'EMPLOYEE' &&
+              user?.employeePosition == 'WAREHOUSE_WORKER') {
+            return AppRoutes.spares;
+          }
+          if (user?.role == 'EMPLOYEE' &&
+              user?.employeePosition == 'RECEPCIONISTA') {
+            return AppRoutes.reception;
+          }
+          return AppRoutes.clientHome;
+        }
+      }
+
       if (isLoggedIn &&
           state.matchedLocation.startsWith('/admin') &&
           authState.valueOrNull?.role != 'ADMIN') {

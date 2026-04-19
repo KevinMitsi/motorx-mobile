@@ -182,16 +182,6 @@ class ClientHomeScreen extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: _QuickActionCard(
-                      icon: Icons.smart_toy_rounded,
-                      label: AppStrings.chatbot,
-                      color: colorScheme.secondary,
-                      containerColor: colorScheme.secondaryContainer,
-                      onTap: () => context.push(AppRoutes.chatbot),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _QuickActionCard(
                       icon: Icons.person_rounded,
                       label: 'Mi Perfil',
                       color: colorScheme.onSurface.withValues(alpha: 0.7),
@@ -199,6 +189,18 @@ class ClientHomeScreen extends ConsumerWidget {
                       onTap: () => context.push(AppRoutes.profile),
                     ),
                   ),
+                  if (role == 'CLIENT') ...[
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _QuickActionCard(
+                        icon: Icons.smart_toy_rounded,
+                        label: AppStrings.chatbot,
+                        color: colorScheme.secondary,
+                        containerColor: colorScheme.secondaryContainer,
+                        onTap: () => context.push(AppRoutes.chatbot),
+                      ),
+                    ),
+                  ],
                 ],
               ),
               if (isEmployee) ...[

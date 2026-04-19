@@ -184,12 +184,6 @@ class AdminHomeScreen extends ConsumerWidget {
                 subtitle: 'Bandeja y envío de notificaciones internas',
                 onTap: () => context.push(AppRoutes.notifications),
               ),
-              _AdminActionCard(
-                icon: Icons.smart_toy_rounded,
-                title: AppStrings.chatbot,
-                subtitle: 'Asistente conversacional para usuarios autenticados',
-                onTap: () => context.push(AppRoutes.chatbot),
-              ),
             ],
           ),
         ),

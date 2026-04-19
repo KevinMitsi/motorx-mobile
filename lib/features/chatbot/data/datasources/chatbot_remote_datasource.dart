@@ -13,6 +13,11 @@ class ChatbotRemoteDatasource {
       final response = await _dio.post(
         ApiEndpoints.chatbotMessage,
         data: {'message': message},
+        options: Options(
+          connectTimeout: const Duration(seconds: 30),
+          sendTimeout: const Duration(seconds: 30),
+          receiveTimeout: const Duration(seconds: 90),
+        ),
       );
 
       final data = response.data;
