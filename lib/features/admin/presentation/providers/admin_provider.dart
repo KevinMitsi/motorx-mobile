@@ -307,6 +307,8 @@ AppointmentEntity _mapAppointment(AppointmentModel m) => AppointmentEntity(
   currentMileage: m.currentMileage,
   clientNotes: m.clientNotes,
   adminNotes: m.adminNotes,
+  verificationCode: m.verificationCode,
+  verificationCodeCreatedAt: m.verificationCodeCreatedAt,
   createdAt: m.createdAt,
   updatedAt: m.updatedAt,
 );

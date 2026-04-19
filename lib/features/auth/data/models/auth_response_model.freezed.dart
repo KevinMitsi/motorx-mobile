@@ -27,6 +27,8 @@ mixin _$AuthResponseModel {
   String get email => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get role => throw _privateConstructorUsedError;
+  String? get employeePosition => throw _privateConstructorUsedError;
+  int? get employeeId => throw _privateConstructorUsedError;
 
   /// Serializes this AuthResponseModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -52,6 +54,8 @@ abstract class $AuthResponseModelCopyWith<$Res> {
     String email,
     String name,
     String role,
+    String? employeePosition,
+    int? employeeId,
   });
 }
 
@@ -76,6 +80,8 @@ class _$AuthResponseModelCopyWithImpl<$Res, $Val extends AuthResponseModel>
     Object? email = null,
     Object? name = null,
     Object? role = null,
+    Object? employeePosition = freezed,
+    Object? employeeId = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -103,6 +109,14 @@ class _$AuthResponseModelCopyWithImpl<$Res, $Val extends AuthResponseModel>
                 ? _value.role
                 : role // ignore: cast_nullable_to_non_nullable
                       as String,
+            employeePosition: freezed == employeePosition
+                ? _value.employeePosition
+                : employeePosition // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            employeeId: freezed == employeeId
+                ? _value.employeeId
+                : employeeId // ignore: cast_nullable_to_non_nullable
+                      as int?,
           )
           as $Val,
     );
@@ -125,6 +139,8 @@ abstract class _$$AuthResponseModelImplCopyWith<$Res>
     String email,
     String name,
     String role,
+    String? employeePosition,
+    int? employeeId,
   });
 }
 
@@ -148,6 +164,8 @@ class __$$AuthResponseModelImplCopyWithImpl<$Res>
     Object? email = null,
     Object? name = null,
     Object? role = null,
+    Object? employeePosition = freezed,
+    Object? employeeId = freezed,
   }) {
     return _then(
       _$AuthResponseModelImpl(
@@ -175,6 +193,14 @@ class __$$AuthResponseModelImplCopyWithImpl<$Res>
             ? _value.role
             : role // ignore: cast_nullable_to_non_nullable
                   as String,
+        employeePosition: freezed == employeePosition
+            ? _value.employeePosition
+            : employeePosition // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        employeeId: freezed == employeeId
+            ? _value.employeeId
+            : employeeId // ignore: cast_nullable_to_non_nullable
+                  as int?,
       ),
     );
   }
@@ -190,6 +216,8 @@ class _$AuthResponseModelImpl implements _AuthResponseModel {
     required this.email,
     required this.name,
     required this.role,
+    this.employeePosition,
+    this.employeeId,
   });
 
   factory _$AuthResponseModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -207,10 +235,14 @@ class _$AuthResponseModelImpl implements _AuthResponseModel {
   final String name;
   @override
   final String role;
+  @override
+  final String? employeePosition;
+  @override
+  final int? employeeId;
 
   @override
   String toString() {
-    return 'AuthResponseModel(token: $token, type: $type, userId: $userId, email: $email, name: $name, role: $role)';
+    return 'AuthResponseModel(token: $token, type: $type, userId: $userId, email: $email, name: $name, role: $role, employeePosition: $employeePosition, employeeId: $employeeId)';
   }
 
   @override
@@ -223,13 +255,26 @@ class _$AuthResponseModelImpl implements _AuthResponseModel {
             (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.role, role) || other.role == role));
+            (identical(other.role, role) || other.role == role) &&
+            (identical(other.employeePosition, employeePosition) ||
+                other.employeePosition == employeePosition) &&
+            (identical(other.employeeId, employeeId) ||
+                other.employeeId == employeeId));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, token, type, userId, email, name, role);
+  int get hashCode => Object.hash(
+    runtimeType,
+    token,
+    type,
+    userId,
+    email,
+    name,
+    role,
+    employeePosition,
+    employeeId,
+  );
 
   /// Create a copy of AuthResponseModel
   /// with the given fields replaced by the non-null parameter values.
@@ -256,6 +301,8 @@ abstract class _AuthResponseModel implements AuthResponseModel {
     required final String email,
     required final String name,
     required final String role,
+    final String? employeePosition,
+    final int? employeeId,
   }) = _$AuthResponseModelImpl;
 
   factory _AuthResponseModel.fromJson(Map<String, dynamic> json) =
@@ -273,6 +320,10 @@ abstract class _AuthResponseModel implements AuthResponseModel {
   String get name;
   @override
   String get role;
+  @override
+  String? get employeePosition;
+  @override
+  int? get employeeId;
 
   /// Create a copy of AuthResponseModel
   /// with the given fields replaced by the non-null parameter values.

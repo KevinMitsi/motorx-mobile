@@ -60,8 +60,10 @@ class ProfileScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 4),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: colorScheme.secondaryContainer,
                     borderRadius: BorderRadius.circular(8),
@@ -93,6 +95,17 @@ class ProfileScreen extends ConsumerWidget {
                           label: 'ID de usuario',
                           value: auth.userId.toString(),
                         ),
+                        if (auth.employeePosition != null) ...[
+                          const Divider(height: 20),
+                          _InfoRow(
+                            icon: Icons.work_outline_rounded,
+                            label: 'Posición empleado',
+                            value:
+                                AppStrings.employeePositionLabels[auth
+                                    .employeePosition] ??
+                                auth.employeePosition!,
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -103,7 +116,9 @@ class ProfileScreen extends ConsumerWidget {
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 8),
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     child: Row(
                       children: [
                         Icon(
@@ -175,8 +190,7 @@ class ProfileScreen extends ConsumerWidget {
             },
             child: Text(
               AppStrings.logout,
-              style: TextStyle(
-                  color: Theme.of(context).colorScheme.error),
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
           ),
         ],
@@ -207,16 +221,16 @@ class _InfoRow extends StatelessWidget {
         Text(
           label,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurface.withValues(alpha: 0.6),
-              ),
+            color: colorScheme.onSurface.withValues(alpha: 0.6),
+          ),
         ),
         const Spacer(),
         Flexible(
           child: Text(
             value,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
             textAlign: TextAlign.end,
             overflow: TextOverflow.ellipsis,
           ),

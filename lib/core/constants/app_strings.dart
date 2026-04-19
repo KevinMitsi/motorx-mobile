@@ -77,6 +77,7 @@ class AppStrings {
   // ── Appointment Status ────────────────────────────────────
   static const Map<String, String> appointmentStatusLabels = {
     'SCHEDULED': 'Agendada',
+    'AWAITING_CONFIRMATION': 'Pendiente de confirmación',
     'IN_PROGRESS': 'En progreso',
     'COMPLETED': 'Completada',
     'CANCELLED': 'Cancelada',
@@ -102,11 +103,20 @@ class AppStrings {
   static const String adminCancelAppointment = 'Cancelar cita';
   static const String adminMetrics = 'Métricas';
   static const String adminLogs = 'Logs de auditoría';
+  static const String inventory = 'Inventario';
+  static const String spares = 'Repuestos';
+  static const String purchases = 'Compras';
+  static const String sales = 'Ventas';
+  static const String reception = 'Recepción';
+  static const String notifications = 'Notificaciones';
+  static const String chatbot = 'Chatbot';
+  static const String belowThreshold = 'Bajo umbral';
 
   // ── Employee Positions ────────────────────────────────────
   static const Map<String, String> employeePositionLabels = {
     'RECEPCIONISTA': 'Recepcionista',
     'MECANICO': 'Mecánico',
+    'WAREHOUSE_WORKER': 'Auxiliar de bodega',
   };
 
   // ── Employee States ───────────────────────────────────────
@@ -120,6 +130,14 @@ class AppStrings {
     'CLIENT': 'Cliente',
     'EMPLOYEE': 'Empleado',
     'ADMIN': 'Administrador',
+  };
+
+  // ── Notifications ────────────────────────────────────────
+  static const Map<String, String> notificationUrgencyLabels = {
+    'LOW': 'Baja',
+    'MEDIUM': 'Media',
+    'HIGH': 'Alta',
+    'CRITICAL': 'Crítica',
   };
 
   // ── Generic ───────────────────────────────────────────────

@@ -18,6 +18,8 @@ class AppointmentEntity {
   final int currentMileage;
   final String? clientNotes;
   final String? adminNotes;
+  final String? verificationCode;
+  final String? verificationCodeCreatedAt;
   final String createdAt;
   final String? updatedAt;
 
@@ -40,6 +42,8 @@ class AppointmentEntity {
     required this.currentMileage,
     this.clientNotes,
     this.adminNotes,
+    this.verificationCode,
+    this.verificationCodeCreatedAt,
     required this.createdAt,
     this.updatedAt,
   });

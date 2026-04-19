@@ -17,8 +17,7 @@ class CreateEmployeeScreen extends ConsumerStatefulWidget {
       _CreateEmployeeScreenState();
 }
 
-class _CreateEmployeeScreenState
-    extends ConsumerState<CreateEmployeeScreen> {
+class _CreateEmployeeScreenState extends ConsumerState<CreateEmployeeScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _dniController = TextEditingController();
@@ -44,7 +43,9 @@ class _CreateEmployeeScreenState
     setState(() => _isLoading = true);
 
     try {
-      await ref.read(adminEmployeeNotifierProvider.notifier).createEmployee(
+      await ref
+          .read(adminEmployeeNotifierProvider.notifier)
+          .createEmployee(
             position: _position,
             name: _nameController.text.trim(),
             dni: _dniController.text.trim(),
@@ -97,10 +98,17 @@ class _CreateEmployeeScreenState
                   ),
                   items: const [
                     DropdownMenuItem(
-                        value: 'MECANICO', child: Text('Mecánico')),
+                      value: 'MECANICO',
+                      child: Text('Mecánico'),
+                    ),
                     DropdownMenuItem(
-                        value: 'RECEPCIONISTA',
-                        child: Text('Recepcionista')),
+                      value: 'RECEPCIONISTA',
+                      child: Text('Recepcionista'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'WAREHOUSE_WORKER',
+                      child: Text('Auxiliar de bodega'),
+                    ),
                   ],
                   onChanged: (v) => setState(() => _position = v!),
                 ),
@@ -112,8 +120,9 @@ class _CreateEmployeeScreenState
                   hint: 'Carlos Mecánico',
                   textCapitalization: TextCapitalization.words,
                   prefixIcon: const Icon(Icons.person_rounded),
-                  validator: (v) =>
-                      (v == null || v.isEmpty) ? AppStrings.fieldRequired : null,
+                  validator: (v) => (v == null || v.isEmpty)
+                      ? AppStrings.fieldRequired
+                      : null,
                 ),
                 const SizedBox(height: 16),
 
@@ -123,8 +132,9 @@ class _CreateEmployeeScreenState
                   hint: '9876543210',
                   keyboardType: TextInputType.number,
                   prefixIcon: const Icon(Icons.badge_outlined),
-                  validator: (v) =>
-                      (v == null || v.isEmpty) ? AppStrings.fieldRequired : null,
+                  validator: (v) => (v == null || v.isEmpty)
+                      ? AppStrings.fieldRequired
+                      : null,
                 ),
                 const SizedBox(height: 16),
 
@@ -149,9 +159,11 @@ class _CreateEmployeeScreenState
                   obscureText: _obscurePassword,
                   prefixIcon: const Icon(Icons.lock_outlined),
                   suffixIcon: IconButton(
-                    icon: Icon(_obscurePassword
-                        ? Icons.visibility_outlined
-                        : Icons.visibility_off_outlined),
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
+                    ),
                     onPressed: () =>
                         setState(() => _obscurePassword = !_obscurePassword),
                   ),
@@ -164,8 +176,7 @@ class _CreateEmployeeScreenState
                     return null;
                   },
                 ),
-                _PasswordRequirementsWidget(
-                    password: _passwordController.text),
+                _PasswordRequirementsWidget(password: _passwordController.text),
                 const SizedBox(height: 16),
 
                 AppTextField(
@@ -174,19 +185,19 @@ class _CreateEmployeeScreenState
                   hint: '3001234567',
                   keyboardType: TextInputType.phone,
                   prefixIcon: const Icon(Icons.phone_outlined),
-                  validator: (v) =>
-                      (v == null || v.isEmpty) ? AppStrings.fieldRequired : null,
+                  validator: (v) => (v == null || v.isEmpty)
+                      ? AppStrings.fieldRequired
+                      : null,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 6, left: 4),
                   child: Text(
                     'Solo ingrese el número sin indicativo +57',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withValues(alpha: 0.6),
-                        ),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.6),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 32),
@@ -220,16 +231,15 @@ class _PasswordRequirementsWidget extends StatelessWidget {
       _Req('Al menos 1 mayúscula', password.contains(RegExp(r'[A-Z]'))),
       _Req('Al menos 1 número', password.contains(RegExp(r'[0-9]'))),
       _Req(
-          'Al menos 1 símbolo (!@#\$...)',
-          password.contains(RegExp(r'[!@#\$%^&*(),.?":{}|<>_\-]'))),
+        'Al menos 1 símbolo (!@#\$...)',
+        password.contains(RegExp(r'[!@#\$%^&*(),.?":{}|<>_\-]')),
+      ),
     ];
     return Padding(
       padding: const EdgeInsets.only(top: 8, left: 4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: checks
-            .map((r) => _RequirementRow(r))
-            .toList(),
+        children: checks.map((r) => _RequirementRow(r)).toList(),
       ),
     );
   }
@@ -260,10 +270,9 @@ class _RequirementRow extends StatelessWidget {
           const SizedBox(width: 6),
           Text(
             req.label,
-            style: Theme.of(context)
-                .textTheme
-                .bodySmall
-                ?.copyWith(color: color),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: color),
           ),
         ],
       ),

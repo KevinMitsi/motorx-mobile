@@ -12,6 +12,8 @@ class AuthResponseModel with _$AuthResponseModel {
     required String email,
     required String name,
     required String role,
+    String? employeePosition,
+    int? employeeId,
   }) = _AuthResponseModel;
 
   factory AuthResponseModel.fromJson(Map<String, dynamic> json) =>

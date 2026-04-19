@@ -29,6 +29,8 @@ mixin _$UserModel {
   String get phone => throw _privateConstructorUsedError;
   String get createdAt => throw _privateConstructorUsedError;
   String get role => throw _privateConstructorUsedError;
+  String? get employeePosition => throw _privateConstructorUsedError;
+  int? get employeeId => throw _privateConstructorUsedError;
   bool get enabled => throw _privateConstructorUsedError;
   bool get accountLocked => throw _privateConstructorUsedError;
   String get updatedAt => throw _privateConstructorUsedError;
@@ -57,6 +59,8 @@ abstract class $UserModelCopyWith<$Res> {
     String phone,
     String createdAt,
     String role,
+    String? employeePosition,
+    int? employeeId,
     bool enabled,
     bool accountLocked,
     String updatedAt,
@@ -86,6 +90,8 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
     Object? phone = null,
     Object? createdAt = null,
     Object? role = null,
+    Object? employeePosition = freezed,
+    Object? employeeId = freezed,
     Object? enabled = null,
     Object? accountLocked = null,
     Object? updatedAt = null,
@@ -124,6 +130,14 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
                 ? _value.role
                 : role // ignore: cast_nullable_to_non_nullable
                       as String,
+            employeePosition: freezed == employeePosition
+                ? _value.employeePosition
+                : employeePosition // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            employeeId: freezed == employeeId
+                ? _value.employeeId
+                : employeeId // ignore: cast_nullable_to_non_nullable
+                      as int?,
             enabled: null == enabled
                 ? _value.enabled
                 : enabled // ignore: cast_nullable_to_non_nullable
@@ -160,6 +174,8 @@ abstract class _$$UserModelImplCopyWith<$Res>
     String phone,
     String createdAt,
     String role,
+    String? employeePosition,
+    int? employeeId,
     bool enabled,
     bool accountLocked,
     String updatedAt,
@@ -188,6 +204,8 @@ class __$$UserModelImplCopyWithImpl<$Res>
     Object? phone = null,
     Object? createdAt = null,
     Object? role = null,
+    Object? employeePosition = freezed,
+    Object? employeeId = freezed,
     Object? enabled = null,
     Object? accountLocked = null,
     Object? updatedAt = null,
@@ -226,6 +244,14 @@ class __$$UserModelImplCopyWithImpl<$Res>
             ? _value.role
             : role // ignore: cast_nullable_to_non_nullable
                   as String,
+        employeePosition: freezed == employeePosition
+            ? _value.employeePosition
+            : employeePosition // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        employeeId: freezed == employeeId
+            ? _value.employeeId
+            : employeeId // ignore: cast_nullable_to_non_nullable
+                  as int?,
         enabled: null == enabled
             ? _value.enabled
             : enabled // ignore: cast_nullable_to_non_nullable
@@ -255,6 +281,8 @@ class _$UserModelImpl implements _UserModel {
     required this.phone,
     required this.createdAt,
     required this.role,
+    this.employeePosition,
+    this.employeeId,
     required this.enabled,
     required this.accountLocked,
     required this.updatedAt,
@@ -280,6 +308,10 @@ class _$UserModelImpl implements _UserModel {
   @override
   final String role;
   @override
+  final String? employeePosition;
+  @override
+  final int? employeeId;
+  @override
   final bool enabled;
   @override
   final bool accountLocked;
@@ -288,7 +320,7 @@ class _$UserModelImpl implements _UserModel {
 
   @override
   String toString() {
-    return 'UserModel(id: $id, name: $name, dni: $dni, email: $email, password: $password, phone: $phone, createdAt: $createdAt, role: $role, enabled: $enabled, accountLocked: $accountLocked, updatedAt: $updatedAt)';
+    return 'UserModel(id: $id, name: $name, dni: $dni, email: $email, password: $password, phone: $phone, createdAt: $createdAt, role: $role, employeePosition: $employeePosition, employeeId: $employeeId, enabled: $enabled, accountLocked: $accountLocked, updatedAt: $updatedAt)';
   }
 
   @override
@@ -306,6 +338,10 @@ class _$UserModelImpl implements _UserModel {
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.role, role) || other.role == role) &&
+            (identical(other.employeePosition, employeePosition) ||
+                other.employeePosition == employeePosition) &&
+            (identical(other.employeeId, employeeId) ||
+                other.employeeId == employeeId) &&
             (identical(other.enabled, enabled) || other.enabled == enabled) &&
             (identical(other.accountLocked, accountLocked) ||
                 other.accountLocked == accountLocked) &&
@@ -325,6 +361,8 @@ class _$UserModelImpl implements _UserModel {
     phone,
     createdAt,
     role,
+    employeePosition,
+    employeeId,
     enabled,
     accountLocked,
     updatedAt,
@@ -354,6 +392,8 @@ abstract class _UserModel implements UserModel {
     required final String phone,
     required final String createdAt,
     required final String role,
+    final String? employeePosition,
+    final int? employeeId,
     required final bool enabled,
     required final bool accountLocked,
     required final String updatedAt,
@@ -378,6 +418,10 @@ abstract class _UserModel implements UserModel {
   String get createdAt;
   @override
   String get role;
+  @override
+  String? get employeePosition;
+  @override
+  int? get employeeId;
   @override
   bool get enabled;
   @override

@@ -39,6 +39,8 @@ mixin _$AppointmentModel {
   int get currentMileage => throw _privateConstructorUsedError;
   String? get clientNotes => throw _privateConstructorUsedError;
   String? get adminNotes => throw _privateConstructorUsedError;
+  String? get verificationCode => throw _privateConstructorUsedError;
+  String? get verificationCodeCreatedAt => throw _privateConstructorUsedError;
   String get createdAt => throw _privateConstructorUsedError;
   String? get updatedAt => throw _privateConstructorUsedError;
 
@@ -78,6 +80,8 @@ abstract class $AppointmentModelCopyWith<$Res> {
     int currentMileage,
     String? clientNotes,
     String? adminNotes,
+    String? verificationCode,
+    String? verificationCodeCreatedAt,
     String createdAt,
     String? updatedAt,
   });
@@ -116,6 +120,8 @@ class _$AppointmentModelCopyWithImpl<$Res, $Val extends AppointmentModel>
     Object? currentMileage = null,
     Object? clientNotes = freezed,
     Object? adminNotes = freezed,
+    Object? verificationCode = freezed,
+    Object? verificationCodeCreatedAt = freezed,
     Object? createdAt = null,
     Object? updatedAt = freezed,
   }) {
@@ -193,6 +199,14 @@ class _$AppointmentModelCopyWithImpl<$Res, $Val extends AppointmentModel>
                 ? _value.adminNotes
                 : adminNotes // ignore: cast_nullable_to_non_nullable
                       as String?,
+            verificationCode: freezed == verificationCode
+                ? _value.verificationCode
+                : verificationCode // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            verificationCodeCreatedAt: freezed == verificationCodeCreatedAt
+                ? _value.verificationCodeCreatedAt
+                : verificationCodeCreatedAt // ignore: cast_nullable_to_non_nullable
+                      as String?,
             createdAt: null == createdAt
                 ? _value.createdAt
                 : createdAt // ignore: cast_nullable_to_non_nullable
@@ -235,6 +249,8 @@ abstract class _$$AppointmentModelImplCopyWith<$Res>
     int currentMileage,
     String? clientNotes,
     String? adminNotes,
+    String? verificationCode,
+    String? verificationCodeCreatedAt,
     String createdAt,
     String? updatedAt,
   });
@@ -272,6 +288,8 @@ class __$$AppointmentModelImplCopyWithImpl<$Res>
     Object? currentMileage = null,
     Object? clientNotes = freezed,
     Object? adminNotes = freezed,
+    Object? verificationCode = freezed,
+    Object? verificationCodeCreatedAt = freezed,
     Object? createdAt = null,
     Object? updatedAt = freezed,
   }) {
@@ -349,6 +367,14 @@ class __$$AppointmentModelImplCopyWithImpl<$Res>
             ? _value.adminNotes
             : adminNotes // ignore: cast_nullable_to_non_nullable
                   as String?,
+        verificationCode: freezed == verificationCode
+            ? _value.verificationCode
+            : verificationCode // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        verificationCodeCreatedAt: freezed == verificationCodeCreatedAt
+            ? _value.verificationCodeCreatedAt
+            : verificationCodeCreatedAt // ignore: cast_nullable_to_non_nullable
+                  as String?,
         createdAt: null == createdAt
             ? _value.createdAt
             : createdAt // ignore: cast_nullable_to_non_nullable
@@ -384,6 +410,8 @@ class _$AppointmentModelImpl implements _AppointmentModel {
     required this.currentMileage,
     this.clientNotes,
     this.adminNotes,
+    this.verificationCode,
+    this.verificationCodeCreatedAt,
     required this.createdAt,
     this.updatedAt,
   });
@@ -428,13 +456,17 @@ class _$AppointmentModelImpl implements _AppointmentModel {
   @override
   final String? adminNotes;
   @override
+  final String? verificationCode;
+  @override
+  final String? verificationCodeCreatedAt;
+  @override
   final String createdAt;
   @override
   final String? updatedAt;
 
   @override
   String toString() {
-    return 'AppointmentModel(id: $id, appointmentType: $appointmentType, status: $status, appointmentDate: $appointmentDate, startTime: $startTime, endTime: $endTime, vehicleId: $vehicleId, vehiclePlate: $vehiclePlate, vehicleBrand: $vehicleBrand, vehicleModel: $vehicleModel, clientId: $clientId, clientFullName: $clientFullName, clientEmail: $clientEmail, technicianId: $technicianId, technicianFullName: $technicianFullName, currentMileage: $currentMileage, clientNotes: $clientNotes, adminNotes: $adminNotes, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'AppointmentModel(id: $id, appointmentType: $appointmentType, status: $status, appointmentDate: $appointmentDate, startTime: $startTime, endTime: $endTime, vehicleId: $vehicleId, vehiclePlate: $vehiclePlate, vehicleBrand: $vehicleBrand, vehicleModel: $vehicleModel, clientId: $clientId, clientFullName: $clientFullName, clientEmail: $clientEmail, technicianId: $technicianId, technicianFullName: $technicianFullName, currentMileage: $currentMileage, clientNotes: $clientNotes, adminNotes: $adminNotes, verificationCode: $verificationCode, verificationCodeCreatedAt: $verificationCodeCreatedAt, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -475,6 +507,13 @@ class _$AppointmentModelImpl implements _AppointmentModel {
                 other.clientNotes == clientNotes) &&
             (identical(other.adminNotes, adminNotes) ||
                 other.adminNotes == adminNotes) &&
+            (identical(other.verificationCode, verificationCode) ||
+                other.verificationCode == verificationCode) &&
+            (identical(
+                  other.verificationCodeCreatedAt,
+                  verificationCodeCreatedAt,
+                ) ||
+                other.verificationCodeCreatedAt == verificationCodeCreatedAt) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -503,6 +542,8 @@ class _$AppointmentModelImpl implements _AppointmentModel {
     currentMileage,
     clientNotes,
     adminNotes,
+    verificationCode,
+    verificationCodeCreatedAt,
     createdAt,
     updatedAt,
   ]);
@@ -544,6 +585,8 @@ abstract class _AppointmentModel implements AppointmentModel {
     required final int currentMileage,
     final String? clientNotes,
     final String? adminNotes,
+    final String? verificationCode,
+    final String? verificationCodeCreatedAt,
     required final String createdAt,
     final String? updatedAt,
   }) = _$AppointmentModelImpl;
@@ -587,6 +630,10 @@ abstract class _AppointmentModel implements AppointmentModel {
   String? get clientNotes;
   @override
   String? get adminNotes;
+  @override
+  String? get verificationCode;
+  @override
+  String? get verificationCodeCreatedAt;
   @override
   String get createdAt;
   @override

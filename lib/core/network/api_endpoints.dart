@@ -82,4 +82,47 @@ class ApiEndpoints {
 
   // ── Admin: Logs ──────────────────────────────────────────
   static const String adminLogs = '/v1/admin/logs';
+
+  // ── Inventory: Spares ────────────────────────────────────
+  static const String spares = '/v1/spares';
+  static String spareDetail(int id) => '/v1/spares/$id';
+  static String sparePurchasePrice(int id) => '/v1/spares/$id/purchase-price';
+  static const String sparesBelowThreshold = '/v1/spares/below-threshold';
+  static String spareNotifyRestock(int id) => '/v1/spares/$id/notify-restock';
+
+  // ── Inventory: Transactions ──────────────────────────────
+  static const String inventoryPurchases = '/v1/inventory/purchases';
+  static String inventoryPurchaseDetail(int id) =>
+      '/v1/inventory/purchases/$id';
+  static const String inventorySales = '/v1/inventory/sales';
+  static const String inventorySalesToday = '/v1/inventory/sales/today';
+  static String inventorySaleDetail(int id) => '/v1/inventory/sales/$id';
+
+  // ── Reception ────────────────────────────────────────────
+  static String receptionInitiate(int appointmentId) =>
+      '/v1/reception/initiate/$appointmentId';
+  static const String receptionConfirm = '/v1/reception/confirm';
+
+  // ── Notifications ────────────────────────────────────────
+  static const String notificationsAdminCreate = '/v1/notifications/admin';
+  static const String notificationsMy = '/v1/notifications/my';
+  static String notificationsMarkRead(int notificationId) =>
+      '/v1/notifications/my/$notificationId/read';
+  static const String notificationsMarkAllRead =
+      '/v1/notifications/my/read-all';
+  static String notificationsAdminByUser(int userId) =>
+      '/v1/notifications/admin/user/$userId';
+
+  // ── Chatbot ──────────────────────────────────────────────
+  static const String chatbotMessage = '/v1/chatbot/message';
+
+  // ── Admin: Inventory Metrics ─────────────────────────────
+  static const String adminInventoryTopSelling =
+      '/v1/admin/metrics/inventory/top-selling';
+  static const String adminInventoryProfit =
+      '/v1/admin/metrics/inventory/profit';
+  static const String adminInventoryStagnant =
+      '/v1/admin/metrics/inventory/stagnant';
+  static const String adminInventoryBelowThresholdPercentage =
+      '/v1/admin/metrics/inventory/below-threshold-percentage';
 }

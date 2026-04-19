@@ -28,7 +28,13 @@ import '../features/admin/presentation/screens/admin_vehicles_screen.dart';
 import '../features/admin/presentation/screens/admin_appointment_detail_screen.dart';
 import '../features/admin/presentation/screens/admin_metrics_screen.dart';
 import '../features/admin/presentation/screens/admin_logs_screen.dart';
+import '../features/admin/presentation/screens/admin_inventory_metrics_screen.dart';
 import '../features/profile/presentation/screens/profile_screen.dart';
+import '../features/spares/presentation/screens/spares_screen.dart';
+import '../features/inventory/presentation/screens/inventory_screen.dart';
+import '../features/reception/presentation/screens/reception_screen.dart';
+import '../features/notifications/presentation/screens/notifications_screen.dart';
+import '../features/chatbot/presentation/screens/chatbot_screen.dart';
 
 /// Route path constants to avoid magic strings.
 class AppRoutes {
@@ -64,7 +70,16 @@ class AppRoutes {
   static const String adminVehicles = '/admin/vehicles';
   static const String adminAppointmentDetail = '/admin/appointments/:id';
   static const String adminMetrics = '/admin/metrics';
+  static const String adminInventoryMetrics = '/admin/metrics/inventory';
   static const String adminLogs = '/admin/logs';
+
+  // Inventory & Reception
+  static const String spares = '/spares';
+  static const String sparesBelowThreshold = '/spares/below-threshold';
+  static const String inventory = '/inventory';
+  static const String reception = '/reception';
+  static const String notifications = '/notifications';
+  static const String chatbot = '/chatbot';
 }
 
 /// ChangeNotifier that listens to auth state changes and notifies go_router
@@ -106,6 +121,20 @@ final routerProvider = Provider<GoRouter>((ref) {
         if (user?.role == 'ADMIN') {
           return AppRoutes.adminHome;
         }
+        if (user?.role == 'EMPLOYEE' &&
+            user?.employeePosition == 'WAREHOUSE_WORKER') {
+          return AppRoutes.spares;
+        }
+        if (user?.role == 'EMPLOYEE' &&
+            user?.employeePosition == 'RECEPCIONISTA') {
+          return AppRoutes.reception;
+        }
+        return AppRoutes.clientHome;
+      }
+
+      if (isLoggedIn &&
+          state.matchedLocation.startsWith('/admin') &&
+          authState.valueOrNull?.role != 'ADMIN') {
         return AppRoutes.clientHome;
       }
 
@@ -236,8 +265,39 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const AdminMetricsScreen(),
       ),
       GoRoute(
+        path: AppRoutes.adminInventoryMetrics,
+        builder: (context, state) => const AdminInventoryMetricsScreen(),
+      ),
+      GoRoute(
         path: AppRoutes.adminLogs,
         builder: (context, state) => const AdminLogsScreen(),
+      ),
+
+      // ── Inventory / Reception / Notifications / Chatbot ──
+      GoRoute(
+        path: AppRoutes.spares,
+        builder: (context, state) => const SparesScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.sparesBelowThreshold,
+        builder: (context, state) =>
+            const SparesScreen(belowThresholdOnly: true),
+      ),
+      GoRoute(
+        path: AppRoutes.inventory,
+        builder: (context, state) => const InventoryScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.reception,
+        builder: (context, state) => const ReceptionScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.notifications,
+        builder: (context, state) => const NotificationsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.chatbot,
+        builder: (context, state) => const ChatbotScreen(),
       ),
     ],
   );

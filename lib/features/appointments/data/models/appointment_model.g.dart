@@ -27,6 +27,8 @@ _$AppointmentModelImpl _$$AppointmentModelImplFromJson(
   currentMileage: (json['currentMileage'] as num).toInt(),
   clientNotes: json['clientNotes'] as String?,
   adminNotes: json['adminNotes'] as String?,
+  verificationCode: json['verificationCode'] as String?,
+  verificationCodeCreatedAt: json['verificationCodeCreatedAt'] as String?,
   createdAt: json['createdAt'] as String,
   updatedAt: json['updatedAt'] as String?,
 );
@@ -52,6 +54,8 @@ Map<String, dynamic> _$$AppointmentModelImplToJson(
   'currentMileage': instance.currentMileage,
   'clientNotes': instance.clientNotes,
   'adminNotes': instance.adminNotes,
+  'verificationCode': instance.verificationCode,
+  'verificationCodeCreatedAt': instance.verificationCodeCreatedAt,
   'createdAt': instance.createdAt,
   'updatedAt': instance.updatedAt,
 };
