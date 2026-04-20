@@ -39,11 +39,12 @@ class AdminInventoryMetricsScreen extends ConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
+                            Text('Unidades: ${state.profit!.totalUnitsSold}'),
                             Text(
-                              'Ventas: ${state.profit!.grossSales.toStringAsFixed(0)}',
+                              'Ventas: ${state.profit!.grossSalesAmount.toStringAsFixed(0)}',
                             ),
                             Text(
-                              'Ganancia: ${state.profit!.estimatedProfit.toStringAsFixed(0)}',
+                              'Ganancia: ${state.profit!.estimatedProfitAmount.toStringAsFixed(0)}',
                             ),
                           ],
                         ),
@@ -55,10 +56,10 @@ class AdminInventoryMetricsScreen extends ConsumerWidget {
                       child: ListTile(
                         title: const Text('Porcentaje bajo umbral'),
                         subtitle: Text(
-                          'Repuestos bajo umbral: ${state.belowThreshold!.belowThresholdCount}/${state.belowThreshold!.totalWithThreshold}',
+                          'Repuestos bajo umbral: ${state.belowThreshold!.sparesBelowThreshold}/${state.belowThreshold!.sparesWithThreshold}',
                         ),
                         trailing: Text(
-                          '${state.belowThreshold!.percentage.toStringAsFixed(2)}%',
+                          '${state.belowThreshold!.belowThresholdPercent.toStringAsFixed(2)}%',
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ),
@@ -76,7 +77,7 @@ class AdminInventoryMetricsScreen extends ConsumerWidget {
                       child: ListTile(
                         title: Text(m.spareName),
                         subtitle: Text('SAV: ${m.savCode}'),
-                        trailing: Text('${m.totalUnitsSold} u'),
+                        trailing: Text('${m.unitsSold} u'),
                       ),
                     ),
                   ),
@@ -92,9 +93,11 @@ class AdminInventoryMetricsScreen extends ConsumerWidget {
                     (m) => Card(
                       child: ListTile(
                         title: Text(m.spareName),
-                        subtitle: Text('SAV: ${m.savCode}'),
+                        subtitle: Text(
+                          'SAV: ${m.savCode} | Stock: ${m.currentStock}',
+                        ),
                         trailing: Text(
-                          m.daysWithoutSales == null
+                          m.neverSold || m.daysWithoutSales == null
                               ? 'Nunca vendido'
                               : '${m.daysWithoutSales} días',
                         ),

@@ -10,6 +10,13 @@ class InventoryMetricsRemoteDatasource {
   InventoryMetricsRemoteDatasource(this._dio);
 
   Future<List<TopSellingSpareMetric>> getTopSelling({int limit = 10}) async {
+    if (limit <= 0) {
+      throw const ServerException(
+        message: 'El parámetro limit debe ser mayor a cero',
+        statusCode: 400,
+      );
+    }
+
     return _handleRequest(() async {
       final response = await _dio.get(
         ApiEndpoints.adminInventoryTopSelling,
@@ -25,6 +32,21 @@ class InventoryMetricsRemoteDatasource {
     required String startDate,
     required String endDate,
   }) async {
+    final parsedStart = DateTime.tryParse(startDate);
+    final parsedEnd = DateTime.tryParse(endDate);
+    if (parsedStart == null || parsedEnd == null) {
+      throw const ServerException(
+        message: 'startDate y endDate deben tener formato YYYY-MM-DD',
+        statusCode: 400,
+      );
+    }
+    if (parsedStart.isAfter(parsedEnd)) {
+      throw const ServerException(
+        message: 'startDate no puede ser mayor que endDate',
+        statusCode: 400,
+      );
+    }
+
     return _handleRequest(() async {
       final response = await _dio.get(
         ApiEndpoints.adminInventoryProfit,
@@ -39,6 +61,13 @@ class InventoryMetricsRemoteDatasource {
   Future<List<StagnantSpareMetric>> getStagnant({
     int daysWithoutSales = 60,
   }) async {
+    if (daysWithoutSales <= 0) {
+      throw const ServerException(
+        message: 'daysWithoutSales debe ser mayor a cero',
+        statusCode: 400,
+      );
+    }
+
     return _handleRequest(() async {
       final response = await _dio.get(
         ApiEndpoints.adminInventoryStagnant,
