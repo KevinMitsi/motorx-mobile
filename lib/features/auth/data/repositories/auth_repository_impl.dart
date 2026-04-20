@@ -18,21 +18,38 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this._remoteDatasource, this._secureStorage);
 
   AuthEntity _mapModelToEntity(AuthResponseModel model) => AuthEntity(
-        token: model.token,
-        type: model.type,
-        userId: model.userId,
-        email: model.email,
-        name: model.name,
-        role: model.role,
-      );
+    token: model.token,
+    type: model.type,
+    userId: model.userId,
+    email: model.email,
+    name: model.name,
+    role: model.role,
+    employeePosition: model.employeePosition,
+    employeeId: model.employeeId,
+  );
 
   Future<void> _cacheAuth(AuthResponseModel model) async {
     await _secureStorage.write(key: 'access_token', value: model.token);
-    await _secureStorage.write(
-        key: 'user_id', value: model.userId.toString());
+    await _secureStorage.write(key: 'user_id', value: model.userId.toString());
     await _secureStorage.write(key: 'user_email', value: model.email);
     await _secureStorage.write(key: 'user_name', value: model.name);
     await _secureStorage.write(key: 'user_role', value: model.role);
+    if (model.employeePosition != null) {
+      await _secureStorage.write(
+        key: 'employee_position',
+        value: model.employeePosition,
+      );
+    } else {
+      await _secureStorage.delete(key: 'employee_position');
+    }
+    if (model.employeeId != null) {
+      await _secureStorage.write(
+        key: 'employee_id',
+        value: model.employeeId.toString(),
+      );
+    } else {
+      await _secureStorage.delete(key: 'employee_id');
+    }
   }
 
   Failure _mapException(Object e) {
@@ -55,8 +72,10 @@ class AuthRepositoryImpl implements AuthRepository {
     required String password,
   }) async {
     try {
-      final result =
-          await _remoteDatasource.login(email: email, password: password);
+      final result = await _remoteDatasource.login(
+        email: email,
+        password: password,
+      );
       if (result is AuthResponseModel) {
         await _cacheAuth(result);
         return Right(_mapModelToEntity(result));
@@ -73,8 +92,10 @@ class AuthRepositoryImpl implements AuthRepository {
     required String code,
   }) async {
     try {
-      final result =
-          await _remoteDatasource.verify2fa(email: email, code: code);
+      final result = await _remoteDatasource.verify2fa(
+        email: email,
+        code: code,
+      );
       await _cacheAuth(result);
       return Right(_mapModelToEntity(result));
     } catch (e) {
@@ -109,18 +130,22 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, UserEntity>> getMe() async {
     try {
       final model = await _remoteDatasource.getMe();
-      return Right(UserEntity(
-        id: model.id,
-        name: model.name,
-        dni: model.dni,
-        email: model.email,
-        phone: model.phone,
-        createdAt: model.createdAt,
-        role: model.role,
-        enabled: model.enabled,
-        accountLocked: model.accountLocked,
-        updatedAt: model.updatedAt,
-      ));
+      return Right(
+        UserEntity(
+          id: model.id,
+          name: model.name,
+          dni: model.dni,
+          email: model.email,
+          phone: model.phone,
+          createdAt: model.createdAt,
+          role: model.role,
+          employeePosition: model.employeePosition,
+          employeeId: model.employeeId,
+          enabled: model.enabled,
+          accountLocked: model.accountLocked,
+          updatedAt: model.updatedAt,
+        ),
+      );
     } catch (e) {
       return Left(_mapException(e));
     }
@@ -144,8 +169,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String email,
   }) async {
     try {
-      final result =
-          await _remoteDatasource.requestPasswordReset(email: email);
+      final result = await _remoteDatasource.requestPasswordReset(email: email);
       return Right(result);
     } catch (e) {
       return Left(_mapException(e));
@@ -173,8 +197,9 @@ class AuthRepositoryImpl implements AuthRepository {
     required String refreshToken,
   }) async {
     try {
-      final result =
-          await _remoteDatasource.refreshToken(refreshToken: refreshToken);
+      final result = await _remoteDatasource.refreshToken(
+        refreshToken: refreshToken,
+      );
       await _cacheAuth(result);
       return Right(_mapModelToEntity(result));
     } catch (e) {
@@ -189,8 +214,16 @@ class AuthRepositoryImpl implements AuthRepository {
     final email = await _secureStorage.read(key: 'user_email');
     final name = await _secureStorage.read(key: 'user_name');
     final role = await _secureStorage.read(key: 'user_role');
+    final employeePosition = await _secureStorage.read(
+      key: 'employee_position',
+    );
+    final employeeId = await _secureStorage.read(key: 'employee_id');
 
-    if (token != null && userId != null && email != null && name != null && role != null) {
+    if (token != null &&
+        userId != null &&
+        email != null &&
+        name != null &&
+        role != null) {
       return AuthEntity(
         token: token,
         type: 'Bearer',
@@ -198,6 +231,8 @@ class AuthRepositoryImpl implements AuthRepository {
         email: email,
         name: name,
         role: role,
+        employeePosition: employeePosition,
+        employeeId: employeeId != null ? int.tryParse(employeeId) : null,
       );
     }
     return null;

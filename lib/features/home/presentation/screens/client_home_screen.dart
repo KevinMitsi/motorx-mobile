@@ -17,6 +17,11 @@ class ClientHomeScreen extends ConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
 
     final userName = authState.valueOrNull?.name ?? 'Usuario';
+    final role = authState.valueOrNull?.role ?? 'CLIENT';
+    final employeePosition = authState.valueOrNull?.employeePosition;
+    final isEmployee = role == 'EMPLOYEE';
+    final isWarehouse = employeePosition == 'WAREHOUSE_WORKER';
+    final isReceptionist = employeePosition == 'RECEPCIONISTA';
 
     return Scaffold(
       body: SafeArea(
@@ -45,8 +50,7 @@ class ClientHomeScreen extends ConsumerWidget {
                         Text(
                           '¡Hola!',
                           style: textTheme.bodyMedium?.copyWith(
-                            color:
-                                colorScheme.onSurface.withValues(alpha: 0.6),
+                            color: colorScheme.onSurface.withValues(alpha: 0.6),
                           ),
                         ),
                         Text(
@@ -158,11 +162,24 @@ class ClientHomeScreen extends ConsumerWidget {
                       label: AppStrings.newAppointment,
                       color: colorScheme.tertiary,
                       containerColor: colorScheme.tertiaryContainer,
-                      onTap: () =>
-                          context.push(AppRoutes.createAppointment),
+                      onTap: () => context.push(AppRoutes.createAppointment),
                     ),
                   ),
                   const SizedBox(width: 12),
+                  Expanded(
+                    child: _QuickActionCard(
+                      icon: Icons.notifications_rounded,
+                      label: AppStrings.notifications,
+                      color: colorScheme.primary,
+                      containerColor: colorScheme.primaryContainer,
+                      onTap: () => context.push(AppRoutes.notifications),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
                   Expanded(
                     child: _QuickActionCard(
                       icon: Icons.person_rounded,
@@ -172,11 +189,90 @@ class ClientHomeScreen extends ConsumerWidget {
                       onTap: () => context.push(AppRoutes.profile),
                     ),
                   ),
+                  if (role == 'CLIENT') ...[
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _QuickActionCard(
+                        icon: Icons.smart_toy_rounded,
+                        label: AppStrings.chatbot,
+                        color: colorScheme.secondary,
+                        containerColor: colorScheme.secondaryContainer,
+                        onTap: () => context.push(AppRoutes.chatbot),
+                      ),
+                    ),
+                  ],
                 ],
               ),
+              if (isEmployee) ...[
+                const SizedBox(height: 24),
+                Text(
+                  'Operación',
+                  style: textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                if (isWarehouse || (!isWarehouse && !isReceptionist))
+                  _OperationTile(
+                    icon: Icons.build_rounded,
+                    title: AppStrings.spares,
+                    subtitle: 'Consulta y gestión de repuestos',
+                    onTap: () => context.push(AppRoutes.spares),
+                  ),
+                if (isWarehouse || (!isWarehouse && !isReceptionist))
+                  _OperationTile(
+                    icon: Icons.swap_horiz_rounded,
+                    title: AppStrings.inventory,
+                    subtitle: 'Registro de compras y ventas',
+                    onTap: () => context.push(AppRoutes.inventory),
+                  ),
+                if (isReceptionist || (!isWarehouse && !isReceptionist))
+                  _OperationTile(
+                    icon: Icons.fact_check_rounded,
+                    title: AppStrings.reception,
+                    subtitle: 'Flujo de recepción con código',
+                    onTap: () => context.push(AppRoutes.reception),
+                  ),
+              ],
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _OperationTile extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  const _OperationTile({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: colorScheme.secondaryContainer,
+          child: Icon(icon, color: colorScheme.onSecondaryContainer),
+        ),
+        title: Text(
+          title,
+          style: Theme.of(
+            context,
+          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+        ),
+        subtitle: Text(subtitle),
+        onTap: onTap,
       ),
     );
   }
@@ -216,9 +312,9 @@ class _QuickActionCard extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   label,
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
                   textAlign: TextAlign.center,
                 ),
               ],

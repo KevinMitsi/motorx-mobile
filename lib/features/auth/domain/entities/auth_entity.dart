@@ -7,6 +7,8 @@ class AuthEntity {
   final String email;
   final String name;
   final String role;
+  final String? employeePosition;
+  final int? employeeId;
 
   const AuthEntity({
     required this.token,
@@ -15,5 +17,7 @@ class AuthEntity {
     required this.email,
     required this.name,
     required this.role,
+    this.employeePosition,
+    this.employeeId,
   });
 }

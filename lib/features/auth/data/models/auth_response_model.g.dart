@@ -15,6 +15,8 @@ _$AuthResponseModelImpl _$$AuthResponseModelImplFromJson(
   email: json['email'] as String,
   name: json['name'] as String,
   role: json['role'] as String,
+  employeePosition: json['employeePosition'] as String?,
+  employeeId: (json['employeeId'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$$AuthResponseModelImplToJson(
@@ -26,4 +28,6 @@ Map<String, dynamic> _$$AuthResponseModelImplToJson(
   'email': instance.email,
   'name': instance.name,
   'role': instance.role,
+  'employeePosition': instance.employeePosition,
+  'employeeId': instance.employeeId,
 };

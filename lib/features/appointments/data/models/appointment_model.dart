@@ -25,6 +25,8 @@ class AppointmentModel with _$AppointmentModel {
     required int currentMileage,
     String? clientNotes,
     String? adminNotes,
+    String? verificationCode,
+    String? verificationCodeCreatedAt,
     required String createdAt,
     String? updatedAt,
   }) = _AppointmentModel;

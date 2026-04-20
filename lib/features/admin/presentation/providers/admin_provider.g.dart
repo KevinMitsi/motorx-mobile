@@ -152,7 +152,7 @@ final adminMetricsNotifierProvider =
     );
 
 typedef _$AdminMetricsNotifier = AutoDisposeAsyncNotifier<MetricsSummaryEntity>;
-String _$adminLogsNotifierHash() => r'278e8c517c5b408c62e83c06adfbb7ce013d3961';
+String _$adminLogsNotifierHash() => r'8edd613b32945268f22ed5f26720db840ec12362';
 
 /// See also [AdminLogsNotifier].
 @ProviderFor(AdminLogsNotifier)

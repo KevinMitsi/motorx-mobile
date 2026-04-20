@@ -19,8 +19,7 @@ class AppointmentRepositoryImpl implements AppointmentRepository {
     required String type,
   }) async {
     try {
-      final model =
-          await _datasource.getAvailableSlots(date: date, type: type);
+      final model = await _datasource.getAvailableSlots(date: date, type: type);
       return Right(_mapSlotsToEntity(model));
     } on ServerException catch (e) {
       return Left(_mapException(e));
@@ -34,7 +33,9 @@ class AppointmentRepositoryImpl implements AppointmentRepository {
   }) async {
     try {
       final model = await _datasource.checkPlateRestriction(
-          vehicleId: vehicleId, date: date);
+        vehicleId: vehicleId,
+        date: date,
+      );
       return Right(_mapRestrictionToEntity(model));
     } on ServerException catch (e) {
       return Left(_mapException(e));
@@ -45,12 +46,14 @@ class AppointmentRepositoryImpl implements AppointmentRepository {
   Future<Either<Failure, ReworkInfoEntity>> getReworkInfo() async {
     try {
       final model = await _datasource.getReworkInfo();
-      return Right(ReworkInfoEntity(
-        message: model.message,
-        whatsappLink: model.whatsappLink,
-        phoneNumber: model.phoneNumber,
-        businessHours: model.businessHours,
-      ));
+      return Right(
+        ReworkInfoEntity(
+          message: model.message,
+          whatsappLink: model.whatsappLink,
+          phoneNumber: model.phoneNumber,
+          businessHours: model.businessHours,
+        ),
+      );
     } on ServerException catch (e) {
       return Left(_mapException(e));
     }
@@ -92,7 +95,8 @@ class AppointmentRepositoryImpl implements AppointmentRepository {
 
   @override
   Future<Either<Failure, AppointmentEntity>> getAppointmentDetail(
-      int id) async {
+    int id,
+  ) async {
     try {
       final model = await _datasource.getAppointmentDetail(id);
       return Right(_mapToEntity(model));
@@ -103,7 +107,8 @@ class AppointmentRepositoryImpl implements AppointmentRepository {
 
   @override
   Future<Either<Failure, List<AppointmentEntity>>> getVehicleAppointments(
-      int vehicleId) async {
+    int vehicleId,
+  ) async {
     try {
       final models = await _datasource.getVehicleAppointments(vehicleId);
       return Right(models.map(_mapToEntity).toList());
@@ -125,38 +130,42 @@ class AppointmentRepositoryImpl implements AppointmentRepository {
   // ── Mappers ───────────────────────────────────────────────
 
   AppointmentEntity _mapToEntity(AppointmentModel m) => AppointmentEntity(
-        id: m.id,
-        appointmentType: m.appointmentType,
-        status: m.status,
-        appointmentDate: m.appointmentDate,
-        startTime: m.startTime,
-        endTime: m.endTime,
-        vehicleId: m.vehicleId,
-        vehiclePlate: m.vehiclePlate,
-        vehicleBrand: m.vehicleBrand,
-        vehicleModel: m.vehicleModel,
-        clientId: m.clientId,
-        clientFullName: m.clientFullName,
-        clientEmail: m.clientEmail,
-        technicianId: m.technicianId,
-        technicianFullName: m.technicianFullName,
-        currentMileage: m.currentMileage,
-        clientNotes: m.clientNotes,
-        adminNotes: m.adminNotes,
-        createdAt: m.createdAt,
-        updatedAt: m.updatedAt,
-      );
+    id: m.id,
+    appointmentType: m.appointmentType,
+    status: m.status,
+    appointmentDate: m.appointmentDate,
+    startTime: m.startTime,
+    endTime: m.endTime,
+    vehicleId: m.vehicleId,
+    vehiclePlate: m.vehiclePlate,
+    vehicleBrand: m.vehicleBrand,
+    vehicleModel: m.vehicleModel,
+    clientId: m.clientId,
+    clientFullName: m.clientFullName,
+    clientEmail: m.clientEmail,
+    technicianId: m.technicianId,
+    technicianFullName: m.technicianFullName,
+    currentMileage: m.currentMileage,
+    clientNotes: m.clientNotes,
+    adminNotes: m.adminNotes,
+    verificationCode: m.verificationCode,
+    verificationCodeCreatedAt: m.verificationCodeCreatedAt,
+    createdAt: m.createdAt,
+    updatedAt: m.updatedAt,
+  );
 
   AvailableSlotsEntity _mapSlotsToEntity(AvailableSlotsModel m) =>
       AvailableSlotsEntity(
         date: m.date,
         appointmentType: m.appointmentType,
         availableSlots: m.availableSlots
-            .map((s) => AvailableSlotEntity(
-                  startTime: s.startTime,
-                  endTime: s.endTime,
-                  availableTechnicians: s.availableTechnicians,
-                ))
+            .map(
+              (s) => AvailableSlotEntity(
+                startTime: s.startTime,
+                endTime: s.endTime,
+                availableTechnicians: s.availableTechnicians,
+              ),
+            )
             .toList(),
       );
 
@@ -171,18 +180,18 @@ class AppointmentRepositoryImpl implements AppointmentRepository {
       );
 
   Failure _mapException(ServerException e) => switch (e.statusCode) {
-        401 => const UnauthorizedFailure('Sesión expirada'),
-        403 =>
-          const ForbiddenFailure('No tienes permisos para esta operación'),
-        404 => NotFoundFailure(e.message),
-        409 => ConflictFailure(e.message),
-        422 => ValidationFailure(
-            e.message,
-            fieldErrors: e.details is Map<String, dynamic>
-                ? (e.details as Map<String, dynamic>)
-                    .map((k, v) => MapEntry(k, v.toString()))
-                : null,
-          ),
-        _ => ServerFailure(e.message),
-      };
+    401 => const UnauthorizedFailure('Sesión expirada'),
+    403 => const ForbiddenFailure('No tienes permisos para esta operación'),
+    404 => NotFoundFailure(e.message),
+    409 => ConflictFailure(e.message),
+    422 => ValidationFailure(
+      e.message,
+      fieldErrors: e.details is Map<String, dynamic>
+          ? (e.details as Map<String, dynamic>).map(
+              (k, v) => MapEntry(k, v.toString()),
+            )
+          : null,
+    ),
+    _ => ServerFailure(e.message),
+  };
 }

@@ -14,6 +14,8 @@ class UserModel with _$UserModel {
     required String phone,
     required String createdAt,
     required String role,
+    String? employeePosition,
+    int? employeeId,
     required bool enabled,
     required bool accountLocked,
     required String updatedAt,
