@@ -22,16 +22,21 @@ class InventoryRemoteDatasource {
 
   Future<PurchaseTransactionModel> createPurchase({
     required List<Map<String, dynamic>> items,
-    String? supplier,
+    required String supplier,
   }) async {
+    final normalizedSupplier = supplier.trim();
+    if (normalizedSupplier.isEmpty) {
+      throw const ServerException(
+        message: 'El proveedor es obligatorio',
+        statusCode: 400,
+      );
+    }
+    final normalizedItems = _normalizePurchaseItems(items);
+
     return _handleRequest(() async {
       final response = await _dio.post(
         ApiEndpoints.inventoryPurchases,
-        data: {
-          'items': items,
-          if (supplier?.trim().isNotEmpty ?? false)
-            'supplier': supplier!.trim(),
-        },
+        data: {'supplier': normalizedSupplier, 'items': normalizedItems},
       );
       return PurchaseTransactionModel.fromJson(
         response.data as Map<String, dynamic>,
@@ -60,15 +65,15 @@ class InventoryRemoteDatasource {
   Future<SaleTransactionModel> createSale({
     required List<Map<String, dynamic>> items,
     int? appointmentId,
-    String? notes,
   }) async {
+    final normalizedItems = _normalizeSaleItems(items);
+
     return _handleRequest(() async {
       final response = await _dio.post(
         ApiEndpoints.inventorySales,
         data: {
-          'items': items,
+          'items': normalizedItems,
           if (appointmentId != null) 'appointmentId': appointmentId,
-          if (notes?.trim().isNotEmpty ?? false) 'notes': notes!.trim(),
         },
       );
       return SaleTransactionModel.fromJson(
@@ -107,5 +112,81 @@ class InventoryRemoteDatasource {
         details: data is Map<String, dynamic> ? data : null,
       );
     }
+  }
+
+  List<Map<String, dynamic>> _normalizePurchaseItems(
+    List<Map<String, dynamic>> items,
+  ) {
+    if (items.isEmpty) {
+      throw const ServerException(
+        message: 'Debe incluir al menos un item',
+        statusCode: 400,
+      );
+    }
+
+    return items.map((item) {
+      final spareId = (item['spareId'] as num?)?.toInt() ?? 0;
+      final quantity = (item['quantity'] as num?)?.toInt() ?? 0;
+      final priceRaw = item['purchasePriceWithVat'] ?? item['unitCost'];
+      final purchasePriceWithVat = priceRaw is num
+          ? priceRaw.toDouble()
+          : double.tryParse(priceRaw?.toString() ?? '');
+
+      if (spareId <= 0) {
+        throw const ServerException(
+          message: 'El ID del repuesto es obligatorio',
+          statusCode: 400,
+        );
+      }
+      if (quantity <= 0) {
+        throw const ServerException(
+          message: 'La cantidad debe ser mayor a cero',
+          statusCode: 400,
+        );
+      }
+      if (purchasePriceWithVat == null || purchasePriceWithVat < 0) {
+        throw const ServerException(
+          message: 'El precio de compra no puede ser negativo',
+          statusCode: 400,
+        );
+      }
+
+      return {
+        'spareId': spareId,
+        'quantity': quantity,
+        'purchasePriceWithVat': purchasePriceWithVat,
+      };
+    }).toList();
+  }
+
+  List<Map<String, dynamic>> _normalizeSaleItems(
+    List<Map<String, dynamic>> items,
+  ) {
+    if (items.isEmpty) {
+      throw const ServerException(
+        message: 'Debe incluir al menos un item',
+        statusCode: 400,
+      );
+    }
+
+    return items.map((item) {
+      final spareId = (item['spareId'] as num?)?.toInt() ?? 0;
+      final quantity = (item['quantity'] as num?)?.toInt() ?? 0;
+
+      if (spareId <= 0) {
+        throw const ServerException(
+          message: 'El ID del repuesto es obligatorio',
+          statusCode: 400,
+        );
+      }
+      if (quantity <= 0) {
+        throw const ServerException(
+          message: 'La cantidad debe ser mayor a cero',
+          statusCode: 400,
+        );
+      }
+
+      return {'spareId': spareId, 'quantity': quantity};
+    }).toList();
   }
 }

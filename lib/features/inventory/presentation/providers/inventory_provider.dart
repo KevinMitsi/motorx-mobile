@@ -70,7 +70,7 @@ class InventoryNotifier extends StateNotifier<InventoryState> {
 
   Future<void> createPurchase({
     required List<Map<String, dynamic>> items,
-    String? supplier,
+    required String supplier,
   }) async {
     try {
       final ds = _ref.read(inventoryDatasourceProvider);
@@ -85,15 +85,10 @@ class InventoryNotifier extends StateNotifier<InventoryState> {
   Future<void> createSale({
     required List<Map<String, dynamic>> items,
     int? appointmentId,
-    String? notes,
   }) async {
     try {
       final ds = _ref.read(inventoryDatasourceProvider);
-      await ds.createSale(
-        items: items,
-        appointmentId: appointmentId,
-        notes: notes,
-      );
+      await ds.createSale(items: items, appointmentId: appointmentId);
       await loadAll();
     } catch (e) {
       state = state.copyWith(error: e.toString());

@@ -45,22 +45,21 @@ class SpareRemoteDatasource {
     required String warehouseLocation,
     required int stockThreshold,
   }) async {
+    final payload = _validateAndBuildSparePayload(
+      name: name,
+      savCode: savCode,
+      spareCode: spareCode,
+      supplier: supplier,
+      compatibleMotorcycles: compatibleMotorcycles,
+      quantity: quantity,
+      purchasePriceWithVat: purchasePriceWithVat,
+      isOil: isOil,
+      warehouseLocation: warehouseLocation,
+      stockThreshold: stockThreshold,
+    );
+
     return _handleRequest(() async {
-      final response = await _dio.post(
-        ApiEndpoints.spares,
-        data: {
-          'name': name,
-          'savCode': savCode,
-          'spareCode': spareCode,
-          'supplier': supplier,
-          'compatibleMotorcycles': compatibleMotorcycles,
-          'quantity': quantity,
-          'purchasePriceWithVat': purchasePriceWithVat,
-          'isOil': isOil,
-          'warehouseLocation': warehouseLocation,
-          'stockThreshold': stockThreshold,
-        },
-      );
+      final response = await _dio.post(ApiEndpoints.spares, data: payload);
       return SpareModel.fromJson(response.data as Map<String, dynamic>);
     });
   }
@@ -78,21 +77,23 @@ class SpareRemoteDatasource {
     required String warehouseLocation,
     required int stockThreshold,
   }) async {
+    final payload = _validateAndBuildSparePayload(
+      name: name,
+      savCode: savCode,
+      spareCode: spareCode,
+      supplier: supplier,
+      compatibleMotorcycles: compatibleMotorcycles,
+      quantity: quantity,
+      purchasePriceWithVat: purchasePriceWithVat,
+      isOil: isOil,
+      warehouseLocation: warehouseLocation,
+      stockThreshold: stockThreshold,
+    );
+
     return _handleRequest(() async {
       final response = await _dio.put(
         ApiEndpoints.spareDetail(id),
-        data: {
-          'name': name,
-          'savCode': savCode,
-          'spareCode': spareCode,
-          'supplier': supplier,
-          'compatibleMotorcycles': compatibleMotorcycles,
-          'quantity': quantity,
-          'purchasePriceWithVat': purchasePriceWithVat,
-          'isOil': isOil,
-          'warehouseLocation': warehouseLocation,
-          'stockThreshold': stockThreshold,
-        },
+        data: payload,
       );
       return SpareModel.fromJson(response.data as Map<String, dynamic>);
     });
@@ -102,10 +103,12 @@ class SpareRemoteDatasource {
     required int id,
     required double purchasePriceWithVat,
   }) async {
+    final normalizedPrice = _validatePurchasePrice(purchasePriceWithVat);
+
     return _handleRequest(() async {
       final response = await _dio.patch(
         ApiEndpoints.sparePurchasePrice(id),
-        data: {'purchasePriceWithVat': purchasePriceWithVat},
+        data: {'purchasePriceWithVat': normalizedPrice},
       );
       return SpareModel.fromJson(response.data as Map<String, dynamic>);
     });
@@ -149,5 +152,104 @@ class SpareRemoteDatasource {
         details: data is Map<String, dynamic> ? data : null,
       );
     }
+  }
+
+  Map<String, dynamic> _validateAndBuildSparePayload({
+    required String name,
+    required String savCode,
+    required String spareCode,
+    required String supplier,
+    required List<String> compatibleMotorcycles,
+    required int quantity,
+    required double purchasePriceWithVat,
+    required bool isOil,
+    required String warehouseLocation,
+    required int stockThreshold,
+  }) {
+    final normalizedName = name.trim();
+    final normalizedSavCode = savCode.trim();
+    final normalizedSpareCode = spareCode.trim();
+    final normalizedSupplier = supplier.trim();
+    final normalizedWarehouseLocation = warehouseLocation.trim();
+    final normalizedCompatibleMotorcycles = compatibleMotorcycles
+        .map((item) => item.trim())
+        .where((item) => item.isNotEmpty)
+        .toList();
+
+    if (normalizedName.isEmpty) {
+      throw const ServerException(
+        message: 'El nombre es obligatorio',
+        statusCode: 400,
+      );
+    }
+    if (normalizedSavCode.isEmpty) {
+      throw const ServerException(
+        message: 'El código SAV es obligatorio',
+        statusCode: 400,
+      );
+    }
+    if (normalizedSpareCode.isEmpty) {
+      throw const ServerException(
+        message: 'El código de repuesto es obligatorio',
+        statusCode: 400,
+      );
+    }
+    if (normalizedSupplier.isEmpty) {
+      throw const ServerException(
+        message: 'El proveedor es obligatorio',
+        statusCode: 400,
+      );
+    }
+    if (normalizedCompatibleMotorcycles.isEmpty) {
+      throw const ServerException(
+        message: 'Debe indicar al menos una moto compatible',
+        statusCode: 400,
+      );
+    }
+    if (quantity < 0) {
+      throw const ServerException(
+        message: 'La cantidad no puede ser negativa',
+        statusCode: 400,
+      );
+    }
+    if (stockThreshold < 0) {
+      throw const ServerException(
+        message: 'El umbral de stock no puede ser negativo',
+        statusCode: 400,
+      );
+    }
+    if (!RegExp(
+      r'^\d{2}-\d{2}-\d{2}-\d{2}$',
+    ).hasMatch(normalizedWarehouseLocation)) {
+      throw const ServerException(
+        message: 'La ubicación debe tener formato 00-00-00-00',
+        statusCode: 400,
+      );
+    }
+
+    final normalizedPrice = _validatePurchasePrice(purchasePriceWithVat);
+
+    return {
+      'name': normalizedName,
+      'savCode': normalizedSavCode,
+      'spareCode': normalizedSpareCode,
+      'supplier': normalizedSupplier,
+      'compatibleMotorcycles': normalizedCompatibleMotorcycles,
+      'quantity': quantity,
+      'purchasePriceWithVat': normalizedPrice,
+      'isOil': isOil,
+      'warehouseLocation': normalizedWarehouseLocation,
+      'stockThreshold': stockThreshold,
+    };
+  }
+
+  double _validatePurchasePrice(double value) {
+    if (value < 0) {
+      throw const ServerException(
+        message: 'El precio de compra no puede ser negativo',
+        statusCode: 400,
+      );
+    }
+    return value;
   }
 }

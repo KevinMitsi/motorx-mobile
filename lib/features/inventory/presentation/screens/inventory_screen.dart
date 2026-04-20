@@ -89,7 +89,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
   Future<void> _showPurchaseDialog() async {
     final spareIdCtrl = TextEditingController();
     final qtyCtrl = TextEditingController();
-    final unitCostCtrl = TextEditingController();
+    final purchasePriceCtrl = TextEditingController();
     final supplierCtrl = TextEditingController();
 
     await showDialog(
@@ -111,17 +111,17 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
                 decoration: const InputDecoration(labelText: 'Cantidad'),
               ),
               TextField(
-                controller: unitCostCtrl,
+                controller: purchasePriceCtrl,
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
                 ),
-                decoration: const InputDecoration(labelText: 'Costo unitario'),
+                decoration: const InputDecoration(
+                  labelText: 'Precio de compra con IVA',
+                ),
               ),
               TextField(
                 controller: supplierCtrl,
-                decoration: const InputDecoration(
-                  labelText: 'Proveedor (opcional)',
-                ),
+                decoration: const InputDecoration(labelText: 'Proveedor'),
               ),
             ],
           ),
@@ -135,19 +135,39 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
             width: 120,
             label: 'Guardar',
             onPressed: () async {
+              final spareId = int.tryParse(spareIdCtrl.text.trim()) ?? 0;
+              final quantity = int.tryParse(qtyCtrl.text.trim()) ?? 0;
+              final purchasePrice =
+                  double.tryParse(purchasePriceCtrl.text.trim()) ?? -1;
+              final supplier = supplierCtrl.text.trim();
+
+              if (spareId <= 0 || quantity <= 0 || purchasePrice < 0) {
+                ScaffoldMessenger.of(ctx).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Verifica los campos: repuesto, cantidad (>0) y precio (>=0).',
+                    ),
+                  ),
+                );
+                return;
+              }
+              if (supplier.isEmpty) {
+                ScaffoldMessenger.of(ctx).showSnackBar(
+                  const SnackBar(content: Text('El proveedor es obligatorio.')),
+                );
+                return;
+              }
+
               try {
                 await ref
                     .read(inventoryNotifierProvider.notifier)
                     .createPurchase(
-                      supplier: supplierCtrl.text.trim().isEmpty
-                          ? null
-                          : supplierCtrl.text.trim(),
+                      supplier: supplier,
                       items: [
                         {
-                          'spareId': int.tryParse(spareIdCtrl.text.trim()) ?? 0,
-                          'quantity': int.tryParse(qtyCtrl.text.trim()) ?? 0,
-                          'unitCost':
-                              double.tryParse(unitCostCtrl.text.trim()) ?? 0,
+                          'spareId': spareId,
+                          'quantity': quantity,
+                          'purchasePriceWithVat': purchasePrice,
                         },
                       ],
                     );
@@ -174,7 +194,6 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
     final spareIdCtrl = TextEditingController();
     final qtyCtrl = TextEditingController();
     final appointmentCtrl = TextEditingController();
-    final notesCtrl = TextEditingController();
 
     await showDialog(
       context: context,
@@ -201,12 +220,6 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
                   labelText: 'ID cita (opcional, debe estar IN_PROGRESS)',
                 ),
               ),
-              TextField(
-                controller: notesCtrl,
-                decoration: const InputDecoration(
-                  labelText: 'Notas (opcional)',
-                ),
-              ),
             ],
           ),
         ),
@@ -219,19 +232,27 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
             width: 120,
             label: 'Guardar',
             onPressed: () async {
+              final spareId = int.tryParse(spareIdCtrl.text.trim()) ?? 0;
+              final quantity = int.tryParse(qtyCtrl.text.trim()) ?? 0;
+
+              if (spareId <= 0 || quantity <= 0) {
+                ScaffoldMessenger.of(ctx).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Verifica los campos: repuesto y cantidad deben ser mayores a cero.',
+                    ),
+                  ),
+                );
+                return;
+              }
+
               try {
                 await ref
                     .read(inventoryNotifierProvider.notifier)
                     .createSale(
                       appointmentId: int.tryParse(appointmentCtrl.text.trim()),
-                      notes: notesCtrl.text.trim().isEmpty
-                          ? null
-                          : notesCtrl.text.trim(),
                       items: [
-                        {
-                          'spareId': int.tryParse(spareIdCtrl.text.trim()) ?? 0,
-                          'quantity': int.tryParse(qtyCtrl.text.trim()) ?? 0,
-                        },
+                        {'spareId': spareId, 'quantity': quantity},
                       ],
                     );
                 if (!ctx.mounted) return;
